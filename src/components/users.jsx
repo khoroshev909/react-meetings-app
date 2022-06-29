@@ -4,15 +4,15 @@ import api from '../api'
 const Users = () => {
   
   const [users, setUsers] = useState(api.users.fetchAll())
-  console.log('users: ', users)
+  // console.log('users: ', users)
 
-  const removeUser = (id) => {
-    setUsers(prevState => prevState.filter(user => user._id !== id))
-  }
+  const handleDeleteUser = (userId) => {
+    setUsers(users.filter((user) => user._id !== userId));
+};
 
   const getUserQualities = (qualities) => {
     return qualities.map(quality => {
-      return <span key={quality._id} className={'badge bg-' + quality.color}>{quality.name}</span>
+      return <span key={quality._id} className={'badge bg-' + quality.color + ' mgi-1'}>{quality.name}</span>
     })
   }
   
@@ -25,14 +25,28 @@ const Users = () => {
         <td className="table-primary">{user.completedMeetings}</td>
         <td className="table-primary">{user.rate}</td>
         <td className="table-primary">
-        <button type="button" onClick={() => removeUser(user._id)} className="btn btn-danger">Удалить</button>
+        <button type="button" onClick={() => handleDeleteUser(user._id)} className="btn btn-danger">Удалить</button>
         </td>
       </tr>
     })
   }
 
+  const getMeetingsCountPhrase = (count) => {
+    if (count === 0) {
+      return "У вас не запланировано встреч"
+    } else {
+      const lastOne = Number(count.toString().slice(-1));
+      if (count > 4 && count < 15) {
+        return `У вас запланировано ${count} встреч`
+      } else if ([2, 3, 4].indexOf(lastOne) !== -1) {
+        return `У вас запланировано ${count} встречи`
+      } else if (lastOne === 1) {
+        return `У вас запланирована ${count} встреча`
+      }
+    }
+}
 
-  return <><span className="badge bg-primary">{users.length} человек тусанут с тобой сегодня</span>
+  return <><span className="badge bg-primary">{getMeetingsCountPhrase(users.length)}</span>
   <table className="table table-primary">
   <thead>
     <tr>
