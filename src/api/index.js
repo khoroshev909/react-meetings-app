@@ -1,7 +1,5 @@
 import * as users from './fake.api/user.api'
 
-const API = {
-  users
-}
+const API = { users }
 
 export default API

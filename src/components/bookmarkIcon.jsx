@@ -1,8 +1,20 @@
-const BookmarkIcon = (props) => {
+import React from 'react'
+import propTypes from 'prop-types'
 
-  return props.isBookmarked === false ? 
-  <i className="bi bi-bookmark" onClick={() => props.onToggle(props.id)}></i> 
-  : <i className="bi bi-bookmark-fill" onClick={() => props.onToggle(props.id)}></i>
+const BookmarkIcon = ({ id, isBookmarked, onToggle }) => {
+    return (
+        <button 
+            type="button" 
+            onClick={() => onToggle(id)}>
+            <i className={isBookmarked === false ? 'bi bi-bookmark' : 'bi bi-bookmark-fill'} />
+        </button>
+    )
+}
+
+BookmarkIcon.propTypes = {
+    id: propTypes.string.isRequired,
+    isBookmarked: propTypes.bool.isRequired,
+    onToggle: propTypes.func.isRequired 
 }
 
 export default BookmarkIcon
