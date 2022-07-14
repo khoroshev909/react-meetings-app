@@ -13,6 +13,8 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'import/no-named-as-default': 'off',
+        'eol-last': 'off',
         'react/jsx-filename-extension': [
             'error',
             { extensions: ['.js', '.jsx'] }
