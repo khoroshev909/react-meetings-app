@@ -20,7 +20,7 @@ const fetchAll = () => {
     return new Promise((resolve) => {
         window.setTimeout(() => {
             resolve(professions)
-        }, 500)
+        }, 100)
     })
 }
 

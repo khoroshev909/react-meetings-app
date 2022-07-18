@@ -148,7 +148,7 @@ const fetchAll = () => {
     return new Promise((resolve) => {
         window.setTimeout(() => {
             resolve(users)
-        }, 500)
+        }, 100)
     })
 }
 

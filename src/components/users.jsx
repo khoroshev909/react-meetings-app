@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from 'react'
+import _ from 'lodash'
 import api from '../api'
+import customSort from '../utils/customSort'
 import Pagination from './pagination'
 import SearchStatus from './searchStatus'
-import UserTableRow from './userTableRow'
 import paginate from '../utils/paginate'
 import GroupList from './groupList'
+import UsersTable from './usersTable'
 
-const UsersTable = () => {
-    const pageSize = 4
+const Users = () => {
+    const pageSize = 5
     const [users, setUsers] = useState([])
     const [professions, setProfessions] = useState([])
-    const [currentProf, setCurrentProf] = useState()
+    const [currentProfession, setCurrentProfession] = useState(null)
     const [itemsCount, setItemsCount] = useState(users.length)
     const [currentPage, setCurrentPage] = useState(1)
-    const filteredByProf = currentProf === undefined
+    const [sortBy, setSortBy] = useState({ columnValue: 'name', columnOrder: 'asc' })
+
+    const filteredByProfession = currentProfession === null
         ? users
         : users.filter((user) => { 
-            return JSON.stringify(user.profession) === JSON.stringify(currentProf)
+            return JSON.stringify(user.profession) === JSON.stringify(currentProfession)
         })
-    const count = filteredByProf.length
-    const userCrop = paginate(filteredByProf, currentPage, pageSize)
+
+    const count = filteredByProfession.length
+
+    const sortedByColumn = _.sortBy(filteredByProfession, [sortBy.columnValue])
+    // В новой версии lodash у функции sortBy нет третьего параметра для сортировки asc, desc
+    const sortedAscDesc = customSort(sortedByColumn, sortBy)
+        
+    const userCrop = paginate(sortedAscDesc, currentPage, pageSize)
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data))
@@ -28,15 +38,15 @@ const UsersTable = () => {
     }, [])
         
     useEffect(() => {
-        setItemsCount(filteredByProf.length)
-        if (filteredByProf.length <= 4) {
+        setItemsCount(filteredByProfession.length)
+        if (filteredByProfession.length <= 4) {
             setCurrentPage(1)
         }
-    }, [filteredByProf])
+    }, [filteredByProfession])
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [currentProf])
+    }, [currentProfession])
 
     useEffect(() => {
         if ((users.length + pageSize <= pageSize * currentPage) && currentPage > 1) {
@@ -44,12 +54,20 @@ const UsersTable = () => {
         }
     }, [users])
 
-    const handleDeleteUser = (userId) => {
-        setUsers(users.filter((user) => user._id !== userId))
+    const handleUserSort = (newSortBy) => {
+        setSortBy(newSortBy)
     }
 
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex)
+    }
+
+    const handleFilterUsersByProfession = (newProfession) => {
+        setCurrentProfession(newProfession)
+    }
+
+    const resetProfessions = () => {
+        setCurrentProfession(null)
     }
 
     const handleToggleBookmark = (id) => {
@@ -59,40 +77,20 @@ const UsersTable = () => {
         setUsers(newUsers)
     }
 
-    const handleOnSelectItem = (item) => {
-        setCurrentProf(item)
-    }
-
-    const resetProfessions = () => {
-        setCurrentProf()
-    }
-
-    const getUsersList = () => {
-        return count ? (
-            userCrop.map((user) => {
-                return (
-                    <UserTableRow
-                        key={user._id}
-                        {...user}
-                        onDelete={handleDeleteUser}
-                        onToggleBookmark={handleToggleBookmark} />
-                )
-            })
-        ) : (
-            <tr>
-                <td>Вы удалили все контакты</td>
-            </tr>
-        )
+    const handleDeleteUsers = (id) => {
+        setUsers(users.filter((user) => user._id !== id))
     }
 
     return (
         <div className="d-flex p-2">
             {professions && (
             <div className="d-flex flex-column mt-2">
+
                 <GroupList 
                     items={professions}
-                    selectedItem={currentProf}
-                    onSelectItem={handleOnSelectItem} />
+                    selectedItem={currentProfession}
+                    onSelectItem={handleFilterUsersByProfession} />
+
                 <button
                     type="button"
                     className="btn btn-primary mt-2"
@@ -104,25 +102,18 @@ const UsersTable = () => {
 
             {users && (
             <div className="d-flex flex-column flex-grow-1">
+
                 <div className="d-flex flex-shrink-1">
                     <SearchStatus count={count} />
                 </div>
-                <table className="table table-primary m-2">
-                    <thead>
-                        <tr>
-                            <th scope="col">Имя</th>
-                            <th scope="col">Качества</th>
-                            <th scope="col">Профессия</th>
-                            <th scope="col">Встретился, раз</th>
-                            <th scope="col">Избранное</th>
-                            <th scope="col">Оценка</th>
-                            <th scope="col">
-                                <i className="bi bi-trash3" />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>{getUsersList()}</tbody>
-                </table>
+
+                <UsersTable
+                    users={userCrop}
+                    selectedSort={sortBy}
+                    onDelete={handleDeleteUsers}
+                    onSort={handleUserSort}
+                    onToggleBookmark={handleToggleBookmark} />
+
                 {count > 4 && (
                     <div className="d-flex justify-content-center">
                         <Pagination
@@ -134,9 +125,8 @@ const UsersTable = () => {
                 )}
             </div>
             )}
-
         </div>
     )
 }
 
-export default UsersTable
+export default Users

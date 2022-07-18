@@ -13,6 +13,13 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'react/require-default-props': 'off',
+        'react/no-unstable-nested-components': 'off',
+        'react/destructuring-assignment': 'off',
+        'consistent-return': 'off',
+        'no-param-reassign': 'off',
+        'no-nested-ternary': 'off',
+        'no-confusing-arrow': 'off',
         'import/no-named-as-default': 'off',
         'eol-last': 'off',
         'react/jsx-filename-extension': [

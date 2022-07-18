@@ -1,6 +1,6 @@
 import React from 'react'
 
-const UserQualities = (qualities) => {
+const QualitiesList = (qualities) => {
     return Object.values(qualities).map((quality) => {
         return (
             <span
@@ -12,4 +12,4 @@ const UserQualities = (qualities) => {
     })
 }
 
-export default UserQualities
+export default QualitiesList

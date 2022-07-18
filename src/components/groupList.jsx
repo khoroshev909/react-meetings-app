@@ -3,12 +3,6 @@ import propTypes, { oneOfType } from 'prop-types'
 
 const GroupList = ({ items, onSelectItem, selectedItem, keyProp, valProp }) => {
 
-    // if (Array.isArray(items)) {
-    //     console.log('array')
-    // } else {
-    //     console.log('object')
-    // }
-
     return ( 
         <ul className="list-group">
             {Object.keys(items).map((itemKey) => {
