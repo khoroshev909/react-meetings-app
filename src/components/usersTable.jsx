@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import propTypes from 'prop-types'
 import Table from './table'
 import BookmarkIcon from './bookmarkIcon'
@@ -7,12 +8,20 @@ import QualitiesList from './qualitiesList'
 const UsersTable = ({ users, selectedSort, onDelete, onSort, onToggleBookmark }) => {
 
     const columns = {
-        name: { path: 'name', name: 'Имя' },
+        name: { 
+            path: 'name',
+            name: 'Имя',
+            component: (user) => (
+                <Link to={`users/${user._id}`}>
+                    {user.name}
+                </Link>
+            )
+        },
         qualities: { 
             path: null,
             name: 'Качества',
             component: (user) => (
-                <QualitiesList {...user.qualities} />
+                <QualitiesList qualities={user.qualities} />
             )
         },
         profession: { path: 'profession.name', name: 'Профессия' },

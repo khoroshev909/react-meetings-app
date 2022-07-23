@@ -8,7 +8,7 @@ import paginate from '../utils/paginate'
 import GroupList from './groupList'
 import UsersTable from './usersTable'
 
-const Users = () => {
+const UsersList = () => {
     const pageSize = 5
     const [users, setUsers] = useState([])
     const [professions, setProfessions] = useState([])
@@ -129,4 +129,4 @@ const Users = () => {
     )
 }
 
-export default Users
+export default UsersList
