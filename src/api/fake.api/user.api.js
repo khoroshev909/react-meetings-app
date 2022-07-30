@@ -157,7 +157,7 @@ const fetchById = (id) => {
         window.setTimeout(() => {
             const user = users.find((u) => u._id === id)
             resolve(user)
-        }, 1000)
+        }, 100)
     })
 }
 

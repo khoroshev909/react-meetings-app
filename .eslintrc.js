@@ -13,6 +13,8 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'no-unused-expressions': 'off',
+        'jsx-a11y/label-has-associated-control': 'off',
         'react/require-default-props': 'off',
         'react/no-unstable-nested-components': 'off',
         'react/destructuring-assignment': 'off',

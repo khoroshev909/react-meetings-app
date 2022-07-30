@@ -17,6 +17,12 @@ const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [sortBy, setSortBy] = useState({ columnValue: 'name', columnOrder: 'asc' })
 
+    useEffect(() => {
+        api.professions.fetchAll().then((data) => setProfessions(data))
+            .then(() => api.users.fetchAll())
+            .then((data) => setUsers(data))
+    }, [])
+
     const filteredByProfession = currentProfession === null
         ? users
         : users.filter((user) => { 
@@ -30,13 +36,7 @@ const UsersList = () => {
     const sortedAscDesc = customSort(sortedByColumn, sortBy)
         
     const userCrop = paginate(sortedAscDesc, currentPage, pageSize)
-
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data))
-            .then(() => api.users.fetchAll())
-            .then((data) => setUsers(data))
-    }, [])
-        
+ 
     useEffect(() => {
         setItemsCount(filteredByProfession.length)
         if (filteredByProfession.length <= 4) {
