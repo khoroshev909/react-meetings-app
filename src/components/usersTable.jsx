@@ -5,7 +5,7 @@ import Table from './table'
 import BookmarkIcon from './bookmarkIcon'
 import QualitiesList from './qualitiesList'
 
-const UsersTable = ({ users, selectedSort, onDelete, onSort, onToggleBookmark }) => {
+const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBookmark }) => {
 
     const columns = {
         name: { 
@@ -52,12 +52,13 @@ const UsersTable = ({ users, selectedSort, onDelete, onSort, onToggleBookmark })
     }
     
     return ( 
-        <Table {...{ users, selectedSort, columns, onSort }} />
+        <Table {...{ users, loading, selectedSort, columns, onSort }} />
     )
 }
 
 UsersTable.propTypes = {
     users: propTypes.array.isRequired,
+    loading: propTypes.bool.isRequired,
     onToggleBookmark: propTypes.func.isRequired,
     onDelete: propTypes.func.isRequired,
     onSort: propTypes.func.isRequired,

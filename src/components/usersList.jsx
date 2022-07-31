@@ -7,6 +7,7 @@ import SearchStatus from './searchStatus'
 import paginate from '../utils/paginate'
 import GroupList from './groupList'
 import UsersTable from './usersTable'
+import SearchForm from './searchForm'
 
 const UsersList = () => {
     const pageSize = 5
@@ -16,37 +17,51 @@ const UsersList = () => {
     const [itemsCount, setItemsCount] = useState(users.length)
     const [currentPage, setCurrentPage] = useState(1)
     const [sortBy, setSortBy] = useState({ columnValue: 'name', columnOrder: 'asc' })
+    const [search, setSerch] = useState('')
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data))
             .then(() => api.users.fetchAll())
             .then((data) => setUsers(data))
+            .then(() => setLoading(false))
     }, [])
 
-    const filteredByProfession = currentProfession === null
-        ? users
-        : users.filter((user) => { 
-            return JSON.stringify(user.profession) === JSON.stringify(currentProfession)
+    let filterUsers = []
+    if (search) {
+        const filteredBySearch = users.filter(({ name = 'placeHolder' }) => { 
+            return name.toLowerCase().includes(search.toLowerCase())
         })
 
-    const count = filteredByProfession.length
+        filterUsers = filteredBySearch.length === 0
+            ? []
+            : filteredBySearch
+    } else if (currentProfession !== null) {
+        filterUsers = users.filter((user) => { 
+            return JSON.stringify(user.profession) === JSON.stringify(currentProfession)
+        })
+    } else {
+        filterUsers = users
+    }
+    
+    const count = filterUsers.length
 
-    const sortedByColumn = _.sortBy(filteredByProfession, [sortBy.columnValue])
+    const sortedByColumn = _.sortBy(filterUsers, [sortBy.columnValue])
     // В новой версии lodash у функции sortBy нет третьего параметра для сортировки asc, desc
     const sortedAscDesc = customSort(sortedByColumn, sortBy)
         
     const userCrop = paginate(sortedAscDesc, currentPage, pageSize)
  
     useEffect(() => {
-        setItemsCount(filteredByProfession.length)
-        if (filteredByProfession.length <= 4) {
+        setItemsCount(filterUsers.length)
+        if (filterUsers.length <= 4) {
             setCurrentPage(1)
         }
-    }, [filteredByProfession])
+    }, [filterUsers])
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [currentProfession])
+    }, [currentProfession, search])
 
     useEffect(() => {
         if ((users.length + pageSize <= pageSize * currentPage) && currentPage > 1) {
@@ -63,10 +78,12 @@ const UsersList = () => {
     }
 
     const handleFilterUsersByProfession = (newProfession) => {
+        setSerch('')
         setCurrentProfession(newProfession)
     }
 
     const resetProfessions = () => {
+        setSerch('')
         setCurrentProfession(null)
     }
 
@@ -81,6 +98,12 @@ const UsersList = () => {
         setUsers(users.filter((user) => user._id !== id))
     }
 
+    const handleSearch = ({ target }) => {
+        const { value } = target
+        setCurrentProfession(null)
+        setSerch(value)
+    }
+
     return (
         <div className="d-flex p-2">
             {professions && (
@@ -92,6 +115,7 @@ const UsersList = () => {
                     onSelectItem={handleFilterUsersByProfession} />
 
                 <button
+                    disabled={!currentProfession}
                     type="button"
                     className="btn btn-primary mt-2"
                     onClick={resetProfessions}>
@@ -101,14 +125,18 @@ const UsersList = () => {
             )}
 
             {users && (
-            <div className="d-flex flex-column flex-grow-1">
+            <div className="d-flex flex-column flex-grow-1 p-2 m-2">
 
-                <div className="d-flex flex-shrink-1">
+                <div className="d-flexflex-column flex-shrink-1">
                     <SearchStatus count={count} />
+                    <SearchForm
+                        search={search}
+                        handleSearch={handleSearch} />
                 </div>
 
                 <UsersTable
                     users={userCrop}
+                    loading={loading}
                     selectedSort={sortBy}
                     onDelete={handleDeleteUsers}
                     onSort={handleUserSort}

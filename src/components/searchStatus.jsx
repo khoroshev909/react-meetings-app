@@ -23,7 +23,7 @@ const SearchStatus = ({ count }) => {
     }
 
     return (
-        <span className="badge bg-primary p-2 m-2">
+        <span className="badge bg-primary">
             <h6>{getMeetingsCountPhrase(count)}</h6>
         </span>
     )
