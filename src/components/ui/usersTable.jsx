@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import propTypes from 'prop-types'
-import Table from './table'
-import BookmarkIcon from './bookmarkIcon'
-import QualitiesList from './qualitiesList'
+import Table from '../common/table'
+import Qualities from '../common/quality'
+import Bookmark from '../common/bookmark'
 
 const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBookmark }) => {
 
@@ -21,7 +21,7 @@ const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBo
             path: null,
             name: 'Качества',
             component: (user) => (
-                <QualitiesList qualities={user.qualities} />
+                <Qualities qualities={user.qualities} />
             )
         },
         profession: { path: 'profession.name', name: 'Профессия' },
@@ -30,7 +30,7 @@ const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBo
             path: 'bookmark', 
             name: 'Избранное',
             component: (user) => ( 
-                <BookmarkIcon
+                <Bookmark
                     id={user._id}
                     isBookmarked={user.bookmark}
                     {...{ onToggleBookmark }} />

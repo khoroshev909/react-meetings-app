@@ -1,7 +1,7 @@
 import React from 'react'
 import propTypes from 'prop-types'
 
-const BookmarkIcon = ({ id, isBookmarked, onToggleBookmark }) => {
+const Bookmark = ({ id, isBookmarked, onToggleBookmark }) => {
     return (
         <button 
             type="button" 
@@ -11,10 +11,10 @@ const BookmarkIcon = ({ id, isBookmarked, onToggleBookmark }) => {
     )
 }
 
-BookmarkIcon.propTypes = {
+Bookmark.propTypes = {
     id: propTypes.string.isRequired,
     isBookmarked: propTypes.bool.isRequired,
     onToggleBookmark: propTypes.func.isRequired 
 }
 
-export default BookmarkIcon
+export default Bookmark

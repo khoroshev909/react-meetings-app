@@ -1,10 +1,10 @@
 import React from 'react'
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
-import Navbar from './components/navbar'
+import Navbar from './components/ui/navbar'
 import Users from './components/layouts/users'
 import Main from './components/layouts/main'
 import Login from './components/layouts/login'
-import UserPage from './components/userPage'
+import UserPage from './components/page/userPage'
 
 const App = () => (
     <BrowserRouter>
