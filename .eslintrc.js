@@ -13,6 +13,8 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'prefer-template': 'off',
+        'no-unneeded-ternary': 'off',
         'no-unused-expressions': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
         'react/require-default-props': 'off',

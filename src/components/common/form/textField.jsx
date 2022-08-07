@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import propTypes from 'prop-types'
 
 const TextField = ({ 
-    labelText,
+    label,
     type,
     name,
     value,
@@ -14,26 +14,34 @@ const TextField = ({
 }) => {
     const [showPassport, setShowPassport] = useState(false)
 
+    const handleChange = (e) => {
+        onChange({ name, value: e.target.value })
+    }
+
     const handleShowPassword = () => {
         setShowPassport((prevState) => !prevState)
+    }
+
+    const getClasses = () => {
+        return hasValidation 
+            ? `form-control${error ? ' is-invalid' : ' is-valid'}`
+            : 'form-control'
     }
 
     return (
         <div className="mt-2">
             {showLabel && (
-                <label htmlFor="email">{labelText}</label>
+                <label htmlFor={name + '-' + value}>{label}</label>
             )}
             <div className="input-group">
                 <input 
-                    className={hasValidation 
-                        ? `form-control${error ? ' is-invalid' : ' is-valid'}`
-                        : 'form-control'}
+                    className={getClasses()}
                     type={showPassport ? 'text' : type}
                     placeholder={placeHolder}
-                    id={name}
+                    id={name + '-' + value}
                     name={name}
                     value={value}
-                    onChange={onChange} />
+                    onChange={handleChange} />
                 {type === 'password' && (
                 <button
                     onClick={handleShowPassword}
@@ -52,12 +60,13 @@ const TextField = ({
 TextField.defaultProps = { 
     type: 'text',
     showLabel: true,
+    label: 'Выберите значение',
     hasValidation: true,
     placeHolder: ''
 }
 
 TextField.propTypes = {
-    labelText: propTypes.string.isRequired,
+    label: propTypes.string,
     type: propTypes.string,
     value: propTypes.string.isRequired,
     name: propTypes.string.isRequired,

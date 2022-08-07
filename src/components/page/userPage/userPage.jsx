@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import api from '../../../api'
-import QualitiesList from '../../ui/quality/qualitiesList'
+import QualitiesList from '../../common/quality/qualitiesList'
 
 const UserPage = () => {
 
@@ -40,6 +40,11 @@ const UserPage = () => {
                     <p className="card-text">
                         Оценка: 
                         {user.rate}
+                    </p>
+                    <p className="card-text">
+                        <Link to={'/users/' + userId + '/edit'}>
+                            Редактировать
+                        </Link>
                     </p>
                     <button
                         type="button" 

@@ -5,7 +5,9 @@ export default function validator(formData, validateRules) {
     function validate(inputValue, ruleName, rule) {
         switch (ruleName) {
         case 'isRequired':
-            isValid = inputValue !== ''
+            isValid = typeof inputValue === 'string'
+                ? inputValue !== ''
+                : inputValue === true
             break
         case 'isEmail': {
             const emailRegExp = /^\S+@\S+\.\S+$/g
@@ -34,8 +36,16 @@ export default function validator(formData, validateRules) {
     }
 
     Object.entries(validateRules).forEach(([fieldName, rules]) => {
-        const inputValue = formData[fieldName].trim()
-    
+        let inputValue
+        if (typeof formData[fieldName] === 'string') {
+            inputValue = formData[fieldName].trim()
+        } else if (typeof formData[fieldName] === 'boolean') {
+            inputValue = formData[fieldName]
+        } else if (Array.isArray(formData[fieldName])) {
+            inputValue = !!formData[fieldName].length
+        } else {
+            inputValue = 'Default val'
+        }        
         Object.keys(rules).forEach((ruleName) => {
             const rule = rules[ruleName]
             const error = validate(inputValue, ruleName, rule)

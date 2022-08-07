@@ -16,7 +16,7 @@ const UsersListPage = () => {
     const [currentProfession, setCurrentProfession] = useState(null)
     const [itemsCount, setItemsCount] = useState(users.length)
     const [currentPage, setCurrentPage] = useState(1)
-    const [sortBy, setSortBy] = useState({ columnValue: 'name', columnOrder: 'asc' })
+    const [sortBy, setSortBy] = useState({ columnValue: 'bookmark', columnOrder: 'desc' })
     const [search, setSerch] = useState('')
     const [loading, setLoading] = useState(true)
 
@@ -98,7 +98,7 @@ const UsersListPage = () => {
         setUsers(users.filter((user) => user._id !== id))
     }
 
-    const handleSearch = ({ target }) => {
+    const handleSearch = (target) => {
         const { value } = target
         setCurrentProfession(null)
         setSerch(value)

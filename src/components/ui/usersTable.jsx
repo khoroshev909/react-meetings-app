@@ -44,7 +44,7 @@ const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBo
                 <button
                     type="button"
                     onClick={() => onDelete(user._id)}
-                    className="btn btn-danger">
+                    className="btn btn-info">
                     Удалить
                 </button>
             )
