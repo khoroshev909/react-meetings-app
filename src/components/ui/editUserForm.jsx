@@ -7,34 +7,23 @@ import validator from '../../utils/validator'
 import RadioField from '../common/form/radioField'
 import SelectField from '../common/form/selectField'
 import MultiSelect from '../common/form/multiSelect'
-import CheckboxField from '../common/form/checkboxField'
 
-const EditUserForm = ({ user }) => {
+const EditUserForm = ({ user, professions, qualities }) => {
 
     const [formData, setFormData] = useState({
         _id: user._id,
         name: user.name,
         email: user.email,
         sex: user.sex,
-        profession: user.profession._id,
-        qualities: user.qualities,
-        completedMeetings: user.completedMeetings,
-        rate: user.rate,
-        bookmark: user.bookmark
+        profession: user.profession,
+        qualities: user.qualities
     })
-    const [professions, setProfessions] = useState([])
-    const [qualities, setQualities] = useState({})
     const [errors, setErrors] = useState({})
     const history = useHistory()
 
     const backToUserPage = () => {
         history.push(`/users/${user._id}`)
     }
-
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data))
-        api.qualities.fetchAll().then((data) => setQualities(data))
-    })
 
     const validateRules = {
         name: { 
@@ -62,16 +51,22 @@ const EditUserForm = ({ user }) => {
         validate()
     }, [formData])
 
+    const getProfessionById = () => professions.find((p) => p._id === formData.profession)
+    const getQualities = (items) => items.map((item) => {
+        return Object.values(qualities).find((quality) => quality._id === item.value)
+    })
+
     const handleSubmit = (e) => {
         e.preventDefault()
         const isInvalid = validate(formData, validateRules)
         if (isInvalid) return
-        const value = { ...formData }
-        value.profession = professions.find((p) => p._id === formData.profession)
-        value.qualities = formData.qualities.map((q) => {
-            return Object.values(qualities).find((quality) => quality._id === q.value)
-        })
-        api.users.editUser(user._id, value).then(backToUserPage())
+        const value = { 
+            ...formData,
+            profession: getProfessionById(),
+            qualities: getQualities(formData.qualities)
+        }
+        api.users.update(user._id, value)
+            .then(backToUserPage())
     }
 
     const handleChange = (target) => {
@@ -123,16 +118,8 @@ const EditUserForm = ({ user }) => {
                 options={qualities}
                 showLabel={false}
                 error={errors?.qualities?.message || ''}
-                defaultValue={formData.qualities.map((q) => ({ label: q.name, value: q._id }))}
+                defaultValue={formData.qualities}
                 placeholder="Ваши качества..." />
-
-            <CheckboxField
-                name="bookmark"
-                value={formData.bookmark}
-                onChange={handleChange}
-                hasValidation={false}>
-                <p className="mb-0">Избранное</p>
-            </CheckboxField>
 
             <button
                 type="submit"
@@ -143,6 +130,10 @@ const EditUserForm = ({ user }) => {
     )
 }
 
-EditUserForm.propTypes = { user: propTypes.object.isRequired }
+EditUserForm.propTypes = { 
+    user: propTypes.object.isRequired,
+    professions: propTypes.array.isRequired,
+    qualities: propTypes.object.isRequired
+}
  
 export default EditUserForm

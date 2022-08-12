@@ -156,18 +156,18 @@ const fetchById = (id) => {
     })
 }
 
-const editUser = (userId, value) => {
+const update = (id, data) => {
     return new Promise((resolve) => {
-        window.setTimeout(() => {
-            const idx = users.findIndex((u) => u._id === userId)
-            users[idx] = value
-            resolve(localStorage.setItem('users', JSON.stringify(users)))
-        }, 100)
+        const allUsers = JSON.parse(localStorage.getItem('users'))
+        const idx = allUsers.findIndex((u) => u._id === id)
+        allUsers[idx] = { ...allUsers[idx], ...data }
+        localStorage.setItem('users', JSON.stringify(allUsers))
+        resolve(allUsers[idx])
     })
 }
 
 export default { 
     fetchAll,
     fetchById,
-    editUser
+    update
 }

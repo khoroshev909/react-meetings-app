@@ -13,6 +13,8 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'prefer-arrow-callback': 'off',
+        'no-shadow': 'off',
         'prefer-template': 'off',
         'no-unneeded-ternary': 'off',
         'no-unused-expressions': 'off',

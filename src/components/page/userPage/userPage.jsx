@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import api from '../../../api'
 import QualitiesList from '../../common/quality/qualitiesList'
 
@@ -15,6 +15,10 @@ const UserPage = () => {
 
     const handleBackToUsers = () => {
         history.push('/users')
+    }
+
+    const handleGoToEditUser = () => {
+        history.push(history.location.pathname + '/edit')
     }
     
     return (
@@ -41,17 +45,20 @@ const UserPage = () => {
                         Оценка: 
                         {user.rate}
                     </p>
-                    <p className="card-text">
-                        <Link to={'/users/' + userId + '/edit'}>
+                    <div>
+                        <button
+                            type="button" 
+                            className="btn btn-primary m-2" 
+                            onClick={handleGoToEditUser}>
                             Редактировать
-                        </Link>
-                    </p>
-                    <button
-                        type="button" 
-                        className="btn btn-primary" 
-                        onClick={handleBackToUsers}>
-                        Все пользователи
-                    </button>
+                        </button>
+                        <button
+                            type="button" 
+                            className="btn btn-primary" 
+                            onClick={handleBackToUsers}>
+                            Все пользователи
+                        </button>
+                    </div>
                 </div>
             </div>
         ) : (
