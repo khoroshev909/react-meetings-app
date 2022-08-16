@@ -8,17 +8,31 @@ const comments = [
     },
     {
         _id: '67rdca3eeb7f6fgdasd',
-        pageId: '67rdca3eeb7f6fgeed471820',
+        pageId: '67rdca3eeb7f6fgeed47181f',
         userId: '67rdca3eeb7f6fgeed471816',
         content: 'Lorem ipsum dolor and etc',
         created_at: '1633573058520'
     },
     {
-        _id: '67rdca3eeb7f6fgdaasd',
-        pageId: '67rdca3eeb7f6fgeed471819',
+        _id: '67rdca3eeb7f6fgdaasd0',
+        pageId: '67rdca3eeb7f6fgeed47181f',
+        userId: '67rdca3eeb7f6fgeed471815',
+        content: 'Lorem ipsum dolor and etc',
+        created_at: '1660549329045'
+    },
+    {
+        _id: '67rdca3eeb7f6fgdaasd1',
+        pageId: '67rdca3eeb7f6fgeed47181f',
         userId: '67rdca3eeb7f6fgeed471815',
         content: 'Lorem ipsum dolor and etc',
         created_at: '1633573058520'
+    },
+    {
+        _id: '67rdca3eeb7f6fgdaasd2',
+        pageId: '67rdca3eeb7f6fgeed47181f',
+        userId: '67rdca3eeb7f6fgeed471815',
+        content: 'Lorem ipsum dolor and etc',
+        created_at: '1660632230941'
     },
     {
         _id: '67rdca3eeb7f6fg111',
@@ -44,7 +58,7 @@ const fetchAll = () => {
     return new Promise((resolve) => {
         window.setTimeout(function () {
             resolve(comments)
-        }, 200)
+        }, 100)
     })
 }
 
@@ -56,7 +70,7 @@ const fetchCommentsForUser = (userId) => {
                     (c) => c.pageId === userId
                 )
             )
-        }, 200)
+        }, 100)
     })
 }
 
@@ -66,13 +80,13 @@ const add = (data) => {
             const comments = JSON.parse(localStorage.getItem('comments'))
             const newComment = {
                 ...data,
-                created_at: Date.now(),
+                created_at: String(Date.now()),
                 _id: Math.random().toString(36).substring(2, 9)
             }
             comments.push(newComment)
             localStorage.setItem('comments', JSON.stringify(comments))
             resolve(newComment)
-        }, 200)
+        }, 100)
     })
 }
 
@@ -81,11 +95,9 @@ const remove = (id) => {
         window.setTimeout(function () {
             const comments = JSON.parse(localStorage.getItem('comments'))
             const newComments = comments.filter((x) => x._id !== id)
-            console.log(id)
-            console.log(newComments)
             localStorage.setItem('comments', JSON.stringify(newComments))
             resolve(id)
-        }, 200)
+        }, 100)
     })
 }
 

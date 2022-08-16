@@ -12,14 +12,14 @@ const TextField = ({
     hasValidation,
     placeHolder
 }) => {
-    const [showPassport, setShowPassport] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const handleChange = (e) => {
         onChange({ name, value: e.target.value })
     }
 
     const handleShowPassword = () => {
-        setShowPassport((prevState) => !prevState)
+        setShowPassword((prevState) => !prevState)
     }
 
     const getClasses = () => {
@@ -36,7 +36,7 @@ const TextField = ({
             <div className="input-group">
                 <input 
                     className={getClasses()}
-                    type={showPassport ? 'text' : type}
+                    type={showPassword ? 'text' : type}
                     placeholder={placeHolder}
                     id={name + '-' + value}
                     name={name}
@@ -47,7 +47,7 @@ const TextField = ({
                     onClick={handleShowPassword}
                     type="button" 
                     className="btn btn-outline-secondary">
-                    <i className={`bi bi-eye-${showPassport ? 'slash' : 'fill'}`} />
+                    <i className={`bi bi-eye-${showPassword ? 'slash' : 'fill'}`} />
                 </button>)}
                 {!error || (
                     <div className="invalid-feedback d-block">{error}</div>

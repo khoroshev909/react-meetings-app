@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import propTypes from 'prop-types'
 import Table from '../common/table'
-import Qualities from '../common/quality'
 import Bookmark from '../common/bookmark'
+import { QualitiesBadges } from '../common/quality'
 
 const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBookmark }) => {
 
@@ -21,7 +21,7 @@ const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBo
             path: null,
             name: 'Качества',
             component: (user) => (
-                <Qualities qualities={user.qualities} />
+                <QualitiesBadges qualities={user.qualities} />
             )
         },
         profession: { path: 'profession.name', name: 'Профессия' },

@@ -1,3 +1,7 @@
-import Qualities from './qualitiesList'
+import QualitiesBadges from './qualitiesBadges'
+import QualitiesCard from './qualitiesCard'
 
-export default Qualities
+export {
+    QualitiesBadges,
+    QualitiesCard
+}

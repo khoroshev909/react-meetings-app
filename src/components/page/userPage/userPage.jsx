@@ -1,63 +1,65 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import api from '../../../api'
-import QualitiesList from '../../common/quality/qualitiesList'
+import Comments from '../../ui/comments'
+import MeetingsCard from '../../common/meetingsCard'
+import QualitiesCard from '../../common/quality/qualitiesCard'
+import UserCard from '../../ui/userCard'
 
 const UserPage = () => {
 
     const { userId } = useParams()
     const history = useHistory()
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState()
+    const [comments, setComments] = useState()
 
     useEffect(() => {
         api.users.fetchById(userId).then((data) => setUser(data))
+        api.comments.fetchAll()
+            .then(() => {
+                api.comments.fetchCommentsForUser(userId).then((data) => setComments(data))
+            })
     }, [])
 
-    const handleBackToUsers = () => {
-        history.push('/users')
-    }
-
-    const handleGoToEditUser = () => {
-        history.push(history.location.pathname + '/edit')
+    const handleAddComment = (newComment) => {
+        setComments([
+            ...comments,
+            newComment
+        ])
     }
     
+    const handleRemoveComment = (commentId) => {
+        api.comments.remove(commentId)
+            .then(() => {
+                const newComments = comments.filter((c) => c._id !== commentId)
+                setComments(newComments)
+            })
+    }
+
     return (
         user ? (
-            <div className="card">
-                <div className="card-body">
-                    <h5 className="card-title">
-                        Имя: 
-                        {user.name}
-                    </h5>
-                    <h6 className="card-subtitle mb-2 text-muted">
-                        Профессия:
-                        {user.profession.name}
-                    </h6>
-                    <p className="card-text">
-                        Качества: 
-                        <QualitiesList qualities={user.qualities} />
-                    </p>
-                    <p className="card-text">
-                        Всего встреч: 
-                        {user.completedMeetings}
-                    </p>
-                    <p className="card-text">
-                        Оценка: 
-                        {user.rate}
-                    </p>
-                    <div>
+            <div className="container">
+                <div className="row gutters-sm">
+                    <div className="col-md-4 mb-3">
                         <button
                             type="button" 
-                            className="btn btn-primary m-2" 
-                            onClick={handleGoToEditUser}>
-                            Редактировать
-                        </button>
-                        <button
-                            type="button" 
-                            className="btn btn-primary" 
-                            onClick={handleBackToUsers}>
+                            className="btn btn-primary w-100 mb-2" 
+                            onClick={() => history.push('/users')}>
                             Все пользователи
                         </button>
+                        <UserCard {...user} />
+                        <QualitiesCard qualities={user.qualities} />
+                        <MeetingsCard completedMeetings={user.completedMeetings} />
+                    </div>
+                    <div className="col-md-8">
+                        {comments ? (
+                            <Comments
+                                comments={comments}
+                                onAddComment={handleAddComment}
+                                onRemoveComment={handleRemoveComment} />
+                        ) : (
+                            <h4>Loading</h4>
+                        )} 
                     </div>
                 </div>
             </div>
