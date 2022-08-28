@@ -67,7 +67,7 @@ MultiSelect.defaultProps = {
 MultiSelect.propTypes = {
     name: propTypes.string.isRequired,
     options: propTypes.oneOfType([propTypes.array, propTypes.object]),
-    onChange: propTypes.func.isRequired,
+    onChange: propTypes.func,
     showLabel: propTypes.bool,
     label: propTypes.string,
     error: propTypes.string,
@@ -78,4 +78,4 @@ MultiSelect.propTypes = {
     placeholder: propTypes.string
 }
  
-export default MultiSelect
+export default React.memo(MultiSelect)

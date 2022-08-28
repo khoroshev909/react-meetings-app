@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import api from '../../../api'
-import EditUserForm from '../../ui/editUserForm'
+import EditUserForm from '../../common/form/editUserForm'
 
 const EditUserPage = () => {
+    const { userId } = useParams()
+    const history = useHistory()
     const [loading, setLoading] = useState(true)
+
     const [user, setUser] = useState({ 
         _id: '',
         name: '',
@@ -13,17 +16,16 @@ const EditUserPage = () => {
         profession: '',
         qualities: []
     })
+
     const [professions, setProfessions] = useState([])
     const [qualities, setQualities] = useState([])
-    const history = useHistory()
-    const { userId } = useParams()
 
     const transformQualities = (items) => {
         return Array.isArray(items) 
             ? items.map((q) => ({ label: q.name, value: q._id }))
             : Object.keys(items).map((key) => ({ label: items[key].name, value: items[key]._id }))
     }
-
+    
     useEffect(() => {
         api.users.fetchById(userId).then((data) => {
             setUser((prevstate) => ({
@@ -41,8 +43,24 @@ const EditUserPage = () => {
         if (user._id) setLoading(false)
     }, [user]) 
 
-    const handleBackToUserPage = () => {
-        history.push(`/users/${userId}`)
+    const backToUserPage = () => {
+        history.push(`/users/${user._id}`)
+    }
+
+    const getProfessionById = (data) => professions.find((p) => p._id === data.profession)
+
+    const getQualities = (items) => items.map((item) => {
+        return Object.values(qualities).find((quality) => quality._id === item.value)
+    })
+
+    const handleSubmmit = (data) => {
+        const value = { 
+            ...data,
+            profession: getProfessionById(data),
+            qualities: getQualities(data.qualities)
+        }
+        api.users.update(user._id, value)
+        // .then(backToUserPage())
     }
 
     return (
@@ -53,23 +71,22 @@ const EditUserPage = () => {
                     <button
                         type="button" 
                         className="btn btn-primary mb-2" 
-                        onClick={handleBackToUserPage}>
+                        onClick={backToUserPage}>
                         Назад к пользователю
                     </button>
-                    {loading
-                        ? (
-                            <h4>Loding</h4>
-                        ) 
-                        : (
-                            <EditUserForm
+                    {loading 
+                        ? <h4>Loding</h4>
+                        : <EditUserForm
+                                onEditUser={handleSubmmit}
                                 user={user}
-                                professions={professions}
-                                qualities={qualities} />
-                        )}
+                                qualities={qualities}
+                                professions={professions} />}
                 </div>
             </div>
         </div>
     )
 }
+
+EditUserPage.propTypes = {}
  
 export default EditUserPage

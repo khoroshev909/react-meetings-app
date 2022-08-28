@@ -11,30 +11,10 @@ const UserPage = () => {
     const { userId } = useParams()
     const history = useHistory()
     const [user, setUser] = useState()
-    const [comments, setComments] = useState()
 
     useEffect(() => {
         api.users.fetchById(userId).then((data) => setUser(data))
-        api.comments.fetchAll()
-            .then(() => {
-                api.comments.fetchCommentsForUser(userId).then((data) => setComments(data))
-            })
     }, [])
-
-    const handleAddComment = (newComment) => {
-        setComments([
-            ...comments,
-            newComment
-        ])
-    }
-    
-    const handleRemoveComment = (commentId) => {
-        api.comments.remove(commentId)
-            .then(() => {
-                const newComments = comments.filter((c) => c._id !== commentId)
-                setComments(newComments)
-            })
-    }
 
     return (
         user ? (
@@ -52,14 +32,7 @@ const UserPage = () => {
                         <MeetingsCard completedMeetings={user.completedMeetings} />
                     </div>
                     <div className="col-md-8">
-                        {comments ? (
-                            <Comments
-                                comments={comments}
-                                onAddComment={handleAddComment}
-                                onRemoveComment={handleRemoveComment} />
-                        ) : (
-                            <h4>Loading</h4>
-                        )} 
+                        <Comments />
                     </div>
                 </div>
             </div>

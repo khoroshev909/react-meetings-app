@@ -10,7 +10,8 @@ const TextField = ({
     error, 
     showLabel, 
     hasValidation,
-    placeHolder
+    placeHolder,
+    ...rest
 }) => {
     const [showPassword, setShowPassword] = useState(false)
 
@@ -35,13 +36,14 @@ const TextField = ({
             )}
             <div className="input-group">
                 <input 
-                    className={getClasses()}
+                    className={getClasses() + 'mt-2'}
                     type={showPassword ? 'text' : type}
                     placeholder={placeHolder}
                     id={name + '-' + value}
                     name={name}
                     value={value}
-                    onChange={handleChange} />
+                    onChange={handleChange}
+                    {...rest} />
                 {type === 'password' && (
                 <button
                     onClick={handleShowPassword}
@@ -68,13 +70,13 @@ TextField.defaultProps = {
 TextField.propTypes = {
     label: propTypes.string,
     type: propTypes.string,
-    value: propTypes.string.isRequired,
+    value: propTypes.string,
     name: propTypes.string.isRequired,
-    onChange: propTypes.func.isRequired,
-    error: propTypes.string.isRequired,
+    onChange: propTypes.func,
+    error: propTypes.string,
     showLabel: propTypes.bool,
     hasValidation: propTypes.bool,
     placeHolder: propTypes.string
 }
  
-export default TextField
+export default React.memo(TextField) 

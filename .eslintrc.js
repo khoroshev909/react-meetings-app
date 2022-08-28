@@ -13,6 +13,7 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'jsx-a11y/no-noninteractive-element-interactions': 'off',
         'prefer-arrow-callback': 'off',
         'no-shadow': 'off',
         'prefer-template': 'off',

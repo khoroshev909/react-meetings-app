@@ -33,7 +33,8 @@ const TextAreaField = ({
                     {label}
                 </label>
             )}
-            <textarea 
+            <textarea
+                name={name}
                 className={getClasses()}
                 defaultValue={defaultValue}
                 placeholder={placeholder}
@@ -59,14 +60,14 @@ TextAreaField.defaultProps = {
 TextAreaField.propTypes = {
     label: propTypes.string,
     rows: propTypes.string,
-    value: propTypes.string.isRequired,
+    value: propTypes.string,
     name: propTypes.string.isRequired,
-    onChange: propTypes.func.isRequired,
-    error: propTypes.string.isRequired,
+    onChange: propTypes.func,
+    error: propTypes.string,
     showLabel: propTypes.bool,
     hasValidation: propTypes.bool,
     defaultValue: propTypes.string,
     placeholder: propTypes.string
 }
  
-export default TextAreaField
+export default React.memo(TextAreaField) 

@@ -75,13 +75,13 @@ SelectField.defaultProps = {
 SelectField.propTypes = {
     label: propTypes.string,
     name: propTypes.string.isRequired,
-    value: propTypes.string.isRequired,
-    onChange: propTypes.func.isRequired,
+    value: propTypes.string,
+    onChange: propTypes.func,
     defaultOption: propTypes.string,
     options: propTypes.oneOfType([propTypes.array, propTypes.object]),
-    error: propTypes.string.isRequired,
+    error: propTypes.string,
     hasValidation: propTypes.bool,
     showLabel: propTypes.bool
 }
  
-export default SelectField
+export default React.memo(SelectField) 

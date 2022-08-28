@@ -6,8 +6,7 @@ const SearchForm = ({ search, handleSearch }) => {
     return (
         <form>
             <TextField
-                className=""
-                labelText=""
+                className="form-control"
                 name="search"
                 value={search}
                 onChange={handleSearch}

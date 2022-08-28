@@ -72,7 +72,6 @@ const RegisterForm = () => {
     return (
         <form onSubmit={handleSubmit} className="has-validation shadow p-3">
             <TextField
-                className="mt-2"
                 label="Почта"
                 name="email"
                 value={formData.email}

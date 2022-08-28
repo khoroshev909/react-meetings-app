@@ -40,11 +40,11 @@ CheckboxField.defaultProps = {
 
 CheckboxField.propTypes = {
     name: propTypes.string.isRequired,
-    value: propTypes.bool.isRequired,
-    onChange: propTypes.func.isRequired,
+    value: propTypes.bool,
+    onChange: propTypes.func,
     error: propTypes.string,
     children: propTypes.oneOfType([propTypes.arrayOf(propTypes.node), propTypes.node]),
     hasValidation: propTypes.bool
 }
  
-export default CheckboxField
+export default React.memo(CheckboxField)

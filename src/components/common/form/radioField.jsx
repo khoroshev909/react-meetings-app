@@ -33,9 +33,9 @@ const RadioField = ({
 
 RadioField.propTypes = {
     name: propTypes.string.isRequired,
-    value: propTypes.string.isRequired,
-    onChange: propTypes.func.isRequired,
+    value: propTypes.string,
+    onChange: propTypes.func,
     options: propTypes.array.isRequired
 }
  
-export default RadioField
+export default React.memo(RadioField)
