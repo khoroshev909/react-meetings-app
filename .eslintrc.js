@@ -13,6 +13,7 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'react/jsx-no-constructed-context-values': 'off',
         'jsx-a11y/no-noninteractive-element-interactions': 'off',
         'prefer-arrow-callback': 'off',
         'no-shadow': 'off',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import _ from 'lodash'
-import api from '../../../api'
+// import api from '../../../api'
 import customSort from '../../../utils/customSort'
 import Pagination from '../../common/pagination'
 import SearchStatus from '../../ui/searchStatus'
@@ -8,23 +8,28 @@ import paginate from '../../../utils/paginate'
 import GroupList from '../../common/groupList'
 import UsersTable from '../../ui/usersTable'
 import SearchForm from '../../ui/searchForm'
+import { useUsers } from '../../../hooks/useUsers'
+import { usePprofessions } from '../../../hooks/useProfessions'
 
 const UsersListPage = () => {
+    const { users } = useUsers()
     const pageSize = 5
-    const [users, setUsers] = useState([])
-    const [professions, setProfessions] = useState([])
+    // const [users, setUsers] = useState([])
+    // const [professions, setProfessions] = useState([])
+    const { professions } = usePprofessions([])
     const [currentProfession, setCurrentProfession] = useState(null)
     const [itemsCount, setItemsCount] = useState(users.length)
     const [currentPage, setCurrentPage] = useState(1)
     const [sortBy, setSortBy] = useState({ columnValue: 'bookmark', columnOrder: 'desc' })
     const [search, setSerch] = useState('')
-    const [loading, setLoading] = useState(true)
+    // const [loading, setLoading] = useState(true)
+    // console.log('users: ', users)
 
     useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data))
-            .then(() => api.users.fetchAll())
-            .then((data) => setUsers(data))
-            .then(() => setLoading(false))
+        // api.professions.fetchAll().then((data) => setProfessions(data))
+        // .then(() => api.users.fetchAll())
+        // .then((data) => setUsers(data))
+        // .then(() => setLoading(false))
     }, [])
 
     let filterUsers = []
@@ -37,7 +42,7 @@ const UsersListPage = () => {
             ? []
             : filteredBySearch
     } else if (currentProfession !== null) {
-        filterUsers = users.filter((user) => { 
+        filterUsers = users.filter((user) => {
             return JSON.stringify(user.profession) === JSON.stringify(currentProfession)
         })
     } else {
@@ -91,11 +96,12 @@ const UsersListPage = () => {
         const idx = users.findIndex((user) => user._id === id)
         const newUsers = [...users]
         newUsers[idx].bookmark = !newUsers[idx].bookmark
-        setUsers(newUsers)
+        // setUsers(newUsers)
     }
 
     const handleDeleteUsers = (id) => {
-        setUsers(users.filter((user) => user._id !== id))
+        console.log('id: ', id)
+        // setUsers(users.filter((user) => user._id !== id))
     }
 
     const handleSearch = (target) => {
@@ -136,7 +142,7 @@ const UsersListPage = () => {
 
                 <UsersTable
                     users={userCrop}
-                    loading={loading}
+                    loading={false}
                     selectedSort={sortBy}
                     onDelete={handleDeleteUsers}
                     onSort={handleUserSort}

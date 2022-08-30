@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import propTypes from 'prop-types'
 import Table from '../common/table'
 import Bookmark from '../common/bookmark'
 import { QualitiesBadges } from '../common/quality'
+import Profession from '../common/profession'
 
-const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBookmark }) => {
+const UsersTable = ({ users, loading, selectedSort, onDelete, onSort }) => {
 
     const columns = {
         name: { 
@@ -21,20 +22,40 @@ const UsersTable = ({ users, loading, selectedSort, onDelete, onSort, onToggleBo
             path: null,
             name: 'Качества',
             component: (user) => (
-                <QualitiesBadges qualities={user.qualities} />
+                <QualitiesBadges ids={user.qualities} />
             )
         },
-        profession: { path: 'profession.name', name: 'Профессия' },
+        profession: { 
+            name: 'Профессия',
+            component: (user) => <Profession id={user.profession} />
+        },
         completedMeetings: { path: 'completedMeetings', name: 'Встретился, раз' },
         bookmark: { 
             path: 'bookmark', 
             name: 'Избранное',
-            component: (user) => ( 
-                <Bookmark
-                    id={user._id}
-                    isBookmarked={user.bookmark}
-                    {...{ onToggleBookmark }} />
-            )
+            component: (user) => {
+
+                const [isBookmarked, setIsBookmarked] = useState(
+                    localStorage.getItem(`bookmark-${user._id}`) ? true : false
+                )
+
+                const handleToggleBookmark = () => {
+                    if (isBookmarked) {
+                        localStorage.removeItem(`bookmark-${user._id}`)
+                        setIsBookmarked(false)
+                    } else {
+                        localStorage.setItem(`bookmark-${user._id}`, true)
+                        setIsBookmarked(true)
+                    }
+                }
+
+                return (
+                    <Bookmark
+                        id={user._id}
+                        isBookmarked={isBookmarked}
+                        onToggleBookmark={handleToggleBookmark} />
+                )
+            }
         },
         rate: { path: 'rate', name: 'Оценка' },
         delete: { 

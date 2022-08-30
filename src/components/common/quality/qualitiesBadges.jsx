@@ -1,13 +1,23 @@
 import React from 'react'
 import propTypes from 'prop-types'
 import Quality from './quality'
+import { useQualities } from '../../../hooks/useQualities'
 
-const QualitiesBadges = ({ qualities }) => (
-    qualities.map((quality) => (
-        <Quality key={quality._id} {...{ quality }} />
-    ))
-)
+const QualitiesBadges = ({ ids }) => {
+    const { getQualitiesForUser, loading } = useQualities()
 
-QualitiesBadges.propTypes = { qualities: propTypes.array.isRequired }
+    if (!loading) {
+        const qualities = getQualitiesForUser(ids)
+        return (
+            qualities.map((quality) => (
+                <Quality key={quality._id} {...{ quality }} />
+            ))
+        )
+    }
+    return <p>Loading...</p>
+
+}
+
+QualitiesBadges.propTypes = { ids: propTypes.array.isRequired }
 
 export default QualitiesBadges
