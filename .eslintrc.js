@@ -13,6 +13,9 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
+        'react/jsx-one-expression-per-line': 'off',
+        'no-restricted-syntax': 'off',
+        'no-await-in-loop': 'off',
         'react/jsx-no-constructed-context-values': 'off',
         'jsx-a11y/no-noninteractive-element-interactions': 'off',
         'prefer-arrow-callback': 'off',
