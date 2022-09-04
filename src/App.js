@@ -8,20 +8,23 @@ import Login from './components/layouts/login'
 import 'react-toastify/dist/ReactToastify.css'
 import { ProfessionProvider } from './hooks/useProfessions'
 import { QualityProvider } from './hooks/useQualities'
+import { AuthProvider } from './hooks/useAuth'
 
 const App = () => (
     <BrowserRouter>
-        <Navbar />
-        <QualityProvider>
-            <ProfessionProvider>
-                <Switch>
-                    <Route path="/users/:userId?/:edit?" component={Users} />
-                    <Route path="/login/:type?" component={Login} />
-                    <Route path="/" exact component={Main} />
-                    <Redirect to="/" />
-                </Switch>
-            </ProfessionProvider>
-        </QualityProvider>
+        <AuthProvider>
+            <Navbar />
+            <QualityProvider>
+                <ProfessionProvider>
+                    <Switch>
+                        <Route path="/users/:userId?/:edit?" component={Users} />
+                        <Route path="/login/:type?" component={Login} />
+                        <Route path="/" exact component={Main} />
+                        <Redirect to="/" />
+                    </Switch>
+                </ProfessionProvider>
+            </QualityProvider>
+        </AuthProvider>
         <ToastContainer />
     </BrowserRouter>
 )

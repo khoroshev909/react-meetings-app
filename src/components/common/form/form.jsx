@@ -16,10 +16,6 @@ const FormComponent = ({ children, onSubmit, validateRules, defaultData, ...rest
         return Object.keys(errors).length
     }
 
-    // useEffect(() => {
-    //     validate()
-    // }, [])
-    
     useEffect(() => {
         validate()
     }, [formData])

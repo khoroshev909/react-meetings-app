@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import _ from 'lodash'
-// import api from '../../../api'
 import customSort from '../../../utils/customSort'
 import Pagination from '../../common/pagination'
 import SearchStatus from '../../ui/searchStatus'
@@ -14,23 +13,12 @@ import { usePprofessions } from '../../../hooks/useProfessions'
 const UsersListPage = () => {
     const { users } = useUsers()
     const pageSize = 5
-    // const [users, setUsers] = useState([])
-    // const [professions, setProfessions] = useState([])
     const { professions } = usePprofessions([])
     const [currentProfession, setCurrentProfession] = useState(null)
     const [itemsCount, setItemsCount] = useState(users.length)
     const [currentPage, setCurrentPage] = useState(1)
     const [sortBy, setSortBy] = useState({ columnValue: 'bookmark', columnOrder: 'desc' })
     const [search, setSerch] = useState('')
-    // const [loading, setLoading] = useState(true)
-    // console.log('users: ', users)
-
-    useEffect(() => {
-        // api.professions.fetchAll().then((data) => setProfessions(data))
-        // .then(() => api.users.fetchAll())
-        // .then((data) => setUsers(data))
-        // .then(() => setLoading(false))
-    }, [])
 
     let filterUsers = []
     if (search) {
@@ -96,12 +84,10 @@ const UsersListPage = () => {
         const idx = users.findIndex((user) => user._id === id)
         const newUsers = [...users]
         newUsers[idx].bookmark = !newUsers[idx].bookmark
-        // setUsers(newUsers)
     }
 
     const handleDeleteUsers = (id) => {
         console.log('id: ', id)
-        // setUsers(users.filter((user) => user._id !== id))
     }
 
     const handleSearch = (target) => {

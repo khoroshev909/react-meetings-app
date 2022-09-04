@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import api from '../../api'
+import { useHistory } from 'react-router-dom'
 import validator from '../../utils/validator'
 import TextField from '../common/form/textField'
 import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelect from '../common/form/multiSelect'
 import CheckboxField from '../common/form/checkboxField'
+import { useQualities } from '../../hooks/useQualities'
+import { usePprofessions } from '../../hooks/useProfessions'
+import { useAuth } from '../../hooks/useAuth'
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({ 
@@ -16,15 +19,16 @@ const RegisterForm = () => {
         qualities: '',
         license: false
     })
-    const [errors, setErrors] = useState({})
-    const [qualities, setQualities] = useState({})
-    const [professions, setProfessions] = useState([])
-    const isValid = Object.keys(errors).length
 
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data))
-        api.qualities.fetchAll().then((data) => setQualities(data))
-    }, [])
+    const history = useHistory()
+
+    const { qualities, loading: qualitiesLoading } = useQualities()
+    const { professions, loading: profLoading } = usePprofessions()
+
+    const { signUp } = useAuth()
+
+    const [errors, setErrors] = useState({})
+    const isValid = Object.keys(errors).length
 
     const validateRules = {
         email: { 
@@ -62,71 +66,78 @@ const RegisterForm = () => {
         }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const isInvalid = validate()
         if (isInvalid) return
-        console.log(formData)
+        try {
+            await signUp(formData)
+            history.push('/')
+        } catch (error) {
+            setErrors(error)
+        }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="has-validation shadow p-3">
-            <TextField
-                label="Почта"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                error={errors?.email?.message || ''} />
+        !qualitiesLoading && !profLoading && (
+            <form onSubmit={handleSubmit} className="has-validation shadow p-3">
+                <TextField
+                    label="Почта"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={errors?.email?.message || ''} />
 
-            <TextField
-                label="Пароль"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                error={errors?.password?.message || ''} />
+                <TextField
+                    label="Пароль"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={errors?.password?.message || ''} />
 
-            <SelectField
-                showLabel={false}
-                name="profession"
-                value={formData.profession}
-                onChange={handleChange}
-                defaultOption="Выберите профессию"
-                options={professions}
-                error={errors?.profession?.message || ''} />
+                <SelectField
+                    showLabel={false}
+                    name="profession"
+                    value={formData.profession}
+                    onChange={handleChange}
+                    defaultOption="Выберите профессию"
+                    options={professions}
+                    error={errors?.profession?.message || ''} />
 
-            <RadioField
-                name="sex"
-                value={formData.sex}
-                onChange={handleChange}
-                options={[
-                    { value: 'male', label: 'Муж.' },
-                    { value: 'female', label: 'Жен.' }
-                ]} />
+                <RadioField
+                    name="sex"
+                    value={formData.sex}
+                    onChange={handleChange}
+                    options={[
+                        { value: 'male', label: 'Муж.' },
+                        { value: 'female', label: 'Жен.' }
+                    ]} />
 
-            <MultiSelect
-                name="qualities"
-                onChange={handleChange}
-                options={qualities}
-                showLabel={false}
-                error={errors?.qualities?.message || ''}
-                placeholder="Ваши качества..." />
+                <MultiSelect
+                    name="qualities"
+                    onChange={handleChange}
+                    options={qualities}
+                    showLabel={false}
+                    error={errors?.qualities?.message || ''}
+                    placeholder="Ваши качества..." />
 
-            <CheckboxField
-                name="license"
-                value={formData.license}
-                onChange={handleChange}
-                error={errors?.license?.message || ''}>
-                <p className="mb-0">Даю согласие на обработку персональных данных</p>
-            </CheckboxField>
+                <CheckboxField
+                    name="license"
+                    value={formData.license}
+                    onChange={handleChange}
+                    error={errors?.license?.message || ''}>
+                    <p className="mb-0">Даю согласие на обработку персональных данных</p>
+                </CheckboxField>
 
-            <button
-                className="btn btn-primary w-100 mt-3"
-                type="submit"
-                disabled={isValid}>
-                Войти
-            </button>
-        </form>
+                <button
+                    className="btn btn-primary w-100 mt-3"
+                    type="submit"
+                    disabled={isValid}>
+                    Войти
+                </button>
+            </form>
+        )
     )
 }
  

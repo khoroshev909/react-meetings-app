@@ -27,10 +27,7 @@ const MultiSelect = ({
         )
 
     const handleChange = (data) => {
-        const value = data.map((item) => ({
-            name: item.label,
-            value: item.value
-        }))
+        const value = data.map((item) => item.value)
         onChange({ name, value })
     }
 
