@@ -1,66 +1,63 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import api from '../../../api'
 import EditUserForm from '../../common/form/editUserForm'
+import { usePprofessions } from '../../../hooks/useProfessions'
+import { useQualities } from '../../../hooks/useQualities'
+import { useUsers } from '../../../hooks/useUsers'
+import { useAuth } from '../../../hooks/useAuth'
 
 const EditUserPage = () => {
     const { userId } = useParams()
     const history = useHistory()
-    const [loading, setLoading] = useState(true)
 
+    const [userLoading, setUserLoading] = useState(true)
+ 
     const [user, setUser] = useState({ 
         _id: '',
         name: '',
         email: '',
-        sex: '',
         profession: '',
         qualities: []
     })
 
-    const [professions, setProfessions] = useState([])
-    const [qualities, setQualities] = useState([])
+    const { professions, loading: professionsLoading } = usePprofessions()
+    const { qualities, loading: qualitiesLoading } = useQualities()
+    const { getUserById } = useUsers()
+    const { updateUser } = useAuth()
 
     const transformQualities = (items) => {
         return Array.isArray(items) 
-            ? items.map((q) => ({ label: q.name, value: q._id }))
+            ? qualities.filter((quality) => items.includes(quality._id))
+                .map((q) => ({ label: q.name, value: q._id }))
             : Object.keys(items).map((key) => ({ label: items[key].name, value: items[key]._id }))
+    }
+
+    const transformQualitiestoIds = (items) => {
+        return items.map((item) => typeof item === 'string' ? item : item.value)
     }
     
     useEffect(() => {
-        api.users.fetchById(userId).then((data) => {
-            setUser((prevstate) => ({
-                ...prevstate,
-                ...data,
-                profession: data.profession._id,
-                qualities: transformQualities(data.qualities)
-            }))
+        const data = getUserById(userId)
+        setUser({
+            ...data,
+            qualities: transformQualities(data.qualities)
         })
-        api.professions.fetchAll().then((data) => setProfessions(data))
-        api.qualities.fetchAll().then((data) => setQualities(data))
     }, [])
 
     useEffect(() => {
-        if (user._id) setLoading(false)
+        if (user._id) setUserLoading(false)
     }, [user]) 
 
     const backToUserPage = () => {
         history.push(`/users/${user._id}`)
     }
 
-    const getProfessionById = (data) => professions.find((p) => p._id === data.profession)
-
-    const getQualities = (items) => items.map((item) => {
-        return Object.values(qualities).find((quality) => quality._id === item.value)
-    })
-
-    const handleSubmmit = (data) => {
-        const value = { 
+    const handleSubmmit = async (data) => {
+        await updateUser({ 
             ...data,
-            profession: getProfessionById(data),
-            qualities: getQualities(data.qualities)
-        }
-        api.users.update(user._id, value)
-        // .then(backToUserPage())
+            qualities: transformQualitiestoIds(data.qualities),
+            _id: userId
+        }).then(backToUserPage())
     }
 
     return (
@@ -74,7 +71,7 @@ const EditUserPage = () => {
                         onClick={backToUserPage}>
                         Назад к пользователю
                     </button>
-                    {loading 
+                    {userLoading && professionsLoading && qualitiesLoading
                         ? <h4>Loding</h4>
                         : <EditUserForm
                                 onEditUser={handleSubmmit}

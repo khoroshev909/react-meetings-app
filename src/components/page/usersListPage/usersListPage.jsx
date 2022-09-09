@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import _ from 'lodash'
 import customSort from '../../../utils/customSort'
 import Pagination from '../../common/pagination'
@@ -9,33 +9,58 @@ import UsersTable from '../../ui/usersTable'
 import SearchForm from '../../ui/searchForm'
 import { useUsers } from '../../../hooks/useUsers'
 import { usePprofessions } from '../../../hooks/useProfessions'
+import { useAuth } from '../../../hooks/useAuth'
 
 const UsersListPage = () => {
     const { users } = useUsers()
+    const { currentUser } = useAuth()
     const pageSize = 5
-    const { professions } = usePprofessions([])
+    const { professions, loading: professionsLoading } = usePprofessions()
     const [currentProfession, setCurrentProfession] = useState(null)
     const [itemsCount, setItemsCount] = useState(users.length)
     const [currentPage, setCurrentPage] = useState(1)
     const [sortBy, setSortBy] = useState({ columnValue: 'bookmark', columnOrder: 'desc' })
     const [search, setSerch] = useState('')
 
-    let filterUsers = []
-    if (search) {
-        const filteredBySearch = users.filter(({ name = 'placeHolder' }) => { 
-            return name.toLowerCase().includes(search.toLowerCase())
-        })
-
-        filterUsers = filteredBySearch.length === 0
-            ? []
-            : filteredBySearch
-    } else if (currentProfession !== null) {
-        filterUsers = users.filter((user) => {
-            return JSON.stringify(user.profession) === JSON.stringify(currentProfession)
-        })
-    } else {
-        filterUsers = users
+    function filteredUsers(data) {
+        let filtered = []
+        if (search) {
+            const filteredBySearch = data.filter(({ name }) => { 
+                return name.toLowerCase().includes(search.toLowerCase())
+            })
+    
+            filtered = filteredBySearch.length === 0
+                ? []
+                : filteredBySearch
+        } else if (currentProfession !== null) {
+            filtered = data.filter((user) => {
+                return JSON.stringify(user.profession) === JSON.stringify(currentProfession._id)
+            })
+        } else {
+            filtered = users
+        }
+        return filtered.filter((u) => u._id !== currentUser._id)
     }
+
+    const filterUsers = useCallback(filteredUsers(users), [
+        users, search, currentProfession, currentUser
+    ]) 
+
+    // if (search) {
+    //     const filteredBySearch = users.filter(({ name }) => { 
+    //         return name.toLowerCase().includes(search.toLowerCase())
+    //     })
+
+    //     filterUsers = filteredBySearch.length === 0
+    //         ? []
+    //         : filteredBySearch
+    // } else if (currentProfession !== null) {
+    //     filterUsers = users.filter((user) => {
+    //         return JSON.stringify(user.profession) === JSON.stringify(currentProfession._id)
+    //     })
+    // } else {
+    //     filterUsers = users
+    // }
     
     const count = filterUsers.length
 
@@ -86,10 +111,6 @@ const UsersListPage = () => {
         newUsers[idx].bookmark = !newUsers[idx].bookmark
     }
 
-    const handleDeleteUsers = (id) => {
-        console.log('id: ', id)
-    }
-
     const handleSearch = (target) => {
         const { value } = target
         setCurrentProfession(null)
@@ -98,7 +119,7 @@ const UsersListPage = () => {
 
     return (
         <div className="d-flex p-2">
-            {professions && (
+            {professions && !professionsLoading && (
             <div className="d-flex flex-column mt-2">
 
                 <GroupList 
@@ -130,7 +151,6 @@ const UsersListPage = () => {
                     users={userCrop}
                     loading={false}
                     selectedSort={sortBy}
-                    onDelete={handleDeleteUsers}
                     onSort={handleUserSort}
                     onToggleBookmark={handleToggleBookmark} />
 

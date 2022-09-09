@@ -3,13 +3,13 @@ import propTypes from 'prop-types'
 import Quality from './quality'
 import { useQualities } from '../../../hooks/useQualities'
 
-const QualitiesBadges = ({ ids }) => {
+const QualitiesBadges = ({ qualitiesIds }) => {
     const { getQualitiesForUser, loading } = useQualities()
 
     if (!loading) {
-        const qualities = getQualitiesForUser(ids)
+        const items = getQualitiesForUser(qualitiesIds)
         return (
-            qualities.map((quality) => (
+            items.map((quality) => (
                 <Quality key={quality._id} {...{ quality }} />
             ))
         )
@@ -18,6 +18,6 @@ const QualitiesBadges = ({ ids }) => {
 
 }
 
-QualitiesBadges.propTypes = { ids: propTypes.array.isRequired }
+QualitiesBadges.propTypes = { qualitiesIds: propTypes.array.isRequired }
 
 export default QualitiesBadges

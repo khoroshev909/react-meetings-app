@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import propTypes from 'prop-types'
-import api from '../../api'
 import dateFormat from '../../utils/dateFormat'
+import { useUsers } from '../../hooks/useUsers'
+import { useAuth } from '../../hooks/useAuth'
 
 const CommentComponent = ({ comment, onRemoveComment }) => {
-
+    
     const [user, setUser] = useState()
+    const { getUserById } = useUsers()
+
+    const { currentUser } = useAuth()
 
     useEffect(() => {
-        api.users.fetchById(comment.userId).then((data) => setUser(data))
+        setUser(getUserById(comment.userId))
     }, [])
 
     return (
@@ -38,12 +42,14 @@ const CommentComponent = ({ comment, onRemoveComment }) => {
                                                 </small>
                                             </span>
                                         </p>
-                                        <button 
-                                            className="btn btn-sm text-primary d-flex align-items-center"
-                                            type="button"
-                                            onClick={() => onRemoveComment(comment._id)}>
-                                            <i className="bi bi-x-lg" />
-                                        </button>
+                                        {currentUser._id === user._id && (
+                                            <button 
+                                                className="btn btn-sm text-primary d-flex align-items-center"
+                                                type="button"
+                                                onClick={() => onRemoveComment(comment._id)}>
+                                                <i className="bi bi-x-lg" />
+                                            </button>
+                                        )}
                                     </div>
                                     <p className="small mb-0">
                                         {comment.content}

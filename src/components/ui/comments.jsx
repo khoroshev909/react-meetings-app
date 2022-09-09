@@ -1,35 +1,30 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useParams } from 'react-router-dom'
-import api from '../../api'
+import { nanoid } from 'nanoid'
+import { useAuth } from '../../hooks/useAuth'
+import { useComments } from '../../hooks/useComments'
 import CommentsList from '../common/commentsList'
 import AddCommentForm from '../common/form/addCommentForm'
 
 const Comments = () => {
 
     const { userId } = useParams()
+    const { currentUser } = useAuth()
 
-    const [users, setUsers] = useState()
-    const [comments, setComments] = useState()
-
-    useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data))
-        api.comments.fetchCommentsForUser(userId).then((data) => setComments(data))
-    }, [])
+    const { addComment, comments, removeComment, loading: commentsLoading } = useComments()
                  
     const handleRemoveComment = (commentId) => {
-        api.comments.remove(commentId)
-            .then(() => {
-                const newComments = comments.filter((c) => c._id !== commentId)
-                setComments(newComments)
-            })
+        removeComment(commentId)
     }
 
     const handleAddComment = (newComment) => {
-        api.comments.add({ ...newComment, pageId: userId }).then((comment) => {
-            setComments((prevState) => [
-                ...prevState,
-                comment
-            ])
+        addComment({ 
+            ...newComment,
+            _id: nanoid(),
+            userId: currentUser._id,
+            pageId: userId,
+            created_at: Date.now(),
+            updated_at: Date.now()
         })
     }
 
@@ -37,13 +32,8 @@ const Comments = () => {
         <>
             <div className="card mb-2">
                 <div className="card-body ">
-                    {users ? (
-                        <AddCommentForm
-                            users={users}
-                            onAddComment={handleAddComment} />
-                    ) : (
-                        <h4>Loading</h4>
-                    )}
+                    <AddCommentForm
+                        onAddComment={handleAddComment} />
                 </div>
             </div>
             <div className="card mb-3">
@@ -52,7 +42,7 @@ const Comments = () => {
                         Comments
                     </h2>
                     <hr />
-                    {comments ? (
+                    {!commentsLoading ? (
                         <CommentsList
                             comments={comments}
                             onRemoveComment={handleRemoveComment} />

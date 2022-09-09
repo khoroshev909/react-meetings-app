@@ -12,7 +12,8 @@ import { useAuth } from '../../hooks/useAuth'
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({ 
-        email: '', 
+        email: '',
+        name: '',
         password: '', 
         profession: '',
         sex: 'male',
@@ -34,6 +35,13 @@ const RegisterForm = () => {
         email: { 
             isRequired: { message: 'Введите ваш Email' },
             isEmail: { message: 'Введите корректный Email' }
+        },
+        name: { 
+            isRequired: { message: 'Введите ваше имя' },
+            minLength: {
+                message: 'Минимум 3 символа',
+                value: 3
+            }
         },
         password: { 
             isRequired: { message: 'Введите пароль' },
@@ -87,6 +95,13 @@ const RegisterForm = () => {
                     value={formData.email}
                     onChange={handleChange}
                     error={errors?.email?.message || ''} />
+
+                <TextField
+                    label="Имя"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    error={errors?.name?.message || ''} />
 
                 <TextField
                     label="Пароль"

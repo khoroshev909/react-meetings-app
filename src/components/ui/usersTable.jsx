@@ -6,7 +6,7 @@ import Bookmark from '../common/bookmark'
 import { QualitiesBadges } from '../common/quality'
 import Profession from '../common/profession'
 
-const UsersTable = ({ users, loading, selectedSort, onDelete, onSort }) => {
+const UsersTable = ({ users, loading, selectedSort, onSort }) => {
 
     const columns = {
         name: { 
@@ -22,7 +22,7 @@ const UsersTable = ({ users, loading, selectedSort, onDelete, onSort }) => {
             path: null,
             name: 'Качества',
             component: (user) => (
-                <QualitiesBadges ids={user.qualities} />
+                <QualitiesBadges qualitiesIds={user.qualities} />
             )
         },
         profession: { 
@@ -57,19 +57,7 @@ const UsersTable = ({ users, loading, selectedSort, onDelete, onSort }) => {
                 )
             }
         },
-        rate: { path: 'rate', name: 'Оценка' },
-        delete: { 
-            path: null,
-            name: 'Действие',
-            component: (user) => (
-                <button
-                    type="button"
-                    onClick={() => onDelete(user._id)}
-                    className="btn btn-info">
-                    Удалить
-                </button>
-            )
-        }
+        rate: { path: 'rate', name: 'Оценка' }
     }
     
     return ( 
@@ -81,7 +69,6 @@ UsersTable.propTypes = {
     users: propTypes.array.isRequired,
     loading: propTypes.bool.isRequired,
     onToggleBookmark: propTypes.func.isRequired,
-    onDelete: propTypes.func.isRequired,
     onSort: propTypes.func.isRequired,
     selectedSort: propTypes.object.isRequired
 }

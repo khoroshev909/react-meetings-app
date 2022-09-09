@@ -15,7 +15,7 @@ const LoginForm = () => {
     const isValid = Object.keys(errors).length
 
     const history = useHistory()
-
+    
     const { login } = useAuth()
 
     const validateRules = {
@@ -59,6 +59,11 @@ const LoginForm = () => {
         try {
             await login(formData)
             history.push('/')
+            // history.push(
+            //     history.location.state.from.pathname
+            //         ? history.location.state.from.pathname
+            //         : '/'
+            // )
         } catch (error) {
             setErrors(error)
         }

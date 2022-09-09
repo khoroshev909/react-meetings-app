@@ -1,25 +1,34 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import propTypes from 'prop-types'
+import { usePprofessions } from '../../hooks/useProfessions'
+import { useAuth } from '../../hooks/useAuth'
 
 const UserCard = ({ 
+    _id,
     name,
-    profession,
+    profession: professionId,
     rate
 }) => {
 
     const history = useHistory()
+    const { currentUser } = useAuth()
     const handleClick = () => history.push(history.location.pathname + '/edit')
+    const { getProfessionById } = usePprofessions()
+
+    const profession = getProfessionById(professionId)
 
     return (
         <div className="card mb-3">
             <div className="card-body">
-                <button 
-                    className="position-absolute top-0 end-0 btn btn-light btn-sm"
-                    onClick={handleClick}
-                    type="button">
-                    <i className="bi bi-gear" />
-                </button>
+                {_id === currentUser._id && (
+                    <button 
+                        className="position-absolute top-0 end-0 btn btn-light btn-sm"
+                        onClick={handleClick}
+                        type="button">
+                        <i className="bi bi-gear" />
+                    </button>
+                )}
                 <div className="d-flex flex-column align-items-center text-center position-relative">
                     <img
                         alt="fvsvfb"
@@ -43,8 +52,9 @@ const UserCard = ({
 }
 
 UserCard.propTypes = {
+    _id: propTypes.string.isRequired,
     name: propTypes.string.isRequired,
-    profession: propTypes.object.isRequired,
+    profession: propTypes.string.isRequired,
     rate: propTypes.number.isRequired
 }
  

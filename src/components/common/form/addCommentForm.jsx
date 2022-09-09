@@ -1,32 +1,19 @@
 import React from 'react'
 import propTypes from 'prop-types'
 import FormComponent from './form'
-import SelectField from './selectField'
 import TextAreaField from './textAreaField'
 
-const AddCommentForm = ({ onAddComment, users }) => {
+const AddCommentForm = ({ onAddComment }) => {
 
-    const defaultData = {
-        userId: '',
-        content: ''
-    }
+    const defaultData = { content: '' }
 
-    const validateRules = {
-        userId: { isRequired: { message: 'Не выбран пользователь' } },
-        content: { isRequired: { message: 'Введите комментарий' } }
-    }
+    const validateRules = { userId: { isRequired: { message: 'Не выбран пользователь' } } }
 
     return (
         <FormComponent
             defaultData={defaultData}
             validateRules={validateRules}
             onSubmit={(newComment) => onAddComment(newComment)}>
-
-            <SelectField
-                showLabel={false}
-                name="userId"
-                defaultOption="Выберите пользователя"
-                options={users} />
 
             <TextAreaField
                 autoFocus
@@ -44,9 +31,6 @@ const AddCommentForm = ({ onAddComment, users }) => {
     )
 }
 
-AddCommentForm.propTypes = {
-    users: propTypes.arrayOf(propTypes.object).isRequired,
-    onAddComment: propTypes.func.isRequired
-}
+AddCommentForm.propTypes = { onAddComment: propTypes.func.isRequired }
  
 export default AddCommentForm

@@ -2,7 +2,7 @@ import React from 'react'
 import propTypes from 'prop-types'
 import QualitiesBadges from './qualitiesBadges'
 
-const QualitiesCard = ({ qualities }) => {
+const QualitiesCard = ({ qualitiesIds }) => {
     return (
         <div className="card mb-3">
             <div className="card-body d-flex flex-column justify-content-center text-center">
@@ -10,13 +10,13 @@ const QualitiesCard = ({ qualities }) => {
                     <span>Качества</span>
                 </h5>
                 <p className="card-text">
-                    <QualitiesBadges qualities={qualities} />
+                    <QualitiesBadges qualitiesIds={qualitiesIds} />
                 </p>
             </div>
         </div>
     )
 }
 
-QualitiesCard.propTypes = { qualities: propTypes.array.isRequired }
+QualitiesCard.propTypes = { qualitiesIds: propTypes.array.isRequired }
  
 export default QualitiesCard

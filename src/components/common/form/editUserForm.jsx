@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import propTypes from 'prop-types'
 import FormComponent from './form'
 import TextField from './textField'
-import RadioField from './radioField'
 import SelectField from './selectField'
 import MultiSelect from './multiSelect'
 
 const EditUserForm = ({ user, qualities, professions, onEditUser }) => {
 
+    const prevUser = useRef(user).current
+    const [loadForm, setLoadForm] = useState(false)
+
+    useEffect(() => {
+        if (prevUser._id !== user._id) setLoadForm(true)
+    }, [user])
+    
     const validateRules = {
         name: { 
             isRequired: { message: 'Введите имя' },
@@ -25,53 +31,47 @@ const EditUserForm = ({ user, qualities, professions, onEditUser }) => {
     }
 
     return (
-        <FormComponent
-            validateRules={validateRules}
-            defaultData={user || {}}
-            onSubmit={(data) => onEditUser(data)}>
+        loadForm && ( 
+            <FormComponent
+                validateRules={validateRules}
+                defaultData={user || {}}
+                onSubmit={(data) => onEditUser(data)}>
 
-            <TextField
-                label="Имя"
-                name="name"
-                autoFocus />
+                <TextField
+                    label="Имя"
+                    name="name"
+                    autoFocus />
 
-            <TextField
-                label="Email"
-                name="email" />
+                <TextField
+                    label="Email"
+                    name="email" />
 
-            <RadioField
-                name="sex"
-                options={[
-                    { value: 'male', label: 'Муж.' },
-                    { value: 'female', label: 'Жен.' }
-                ]} />
+                <SelectField
+                    showLabel={false}
+                    options={professions}
+                    name="profession"
+                    defaultOption="Выберите профессию" />
 
-            <SelectField
-                showLabel={false}
-                options={professions}
-                name="profession"
-                defaultOption="Выберите профессию" />
+                <MultiSelect
+                    name="qualities"
+                    defaultValue={user.qualities || []}
+                    options={qualities}
+                    showLabel={false}
+                    placeholder="Ваши качества..." />
 
-            <MultiSelect
-                name="qualities"
-                defaultValue={user.qualities || []}
-                options={qualities}
-                showLabel={false}
-                placeholder="Ваши качества..." />
-
-            <button
-                type="submit"
-                className="btn btn-primary w-100 mt-3">
-                Обновить
-            </button>
-
-        </FormComponent>
+                <button
+                    type="submit"
+                    className="btn btn-primary w-100 mt-3">
+                    Обновить
+                </button>
+            </FormComponent>
+        )
     )
 }
 
 EditUserForm.propTypes = {
     user: propTypes.object.isRequired,
-    qualities: propTypes.object.isRequired,
+    qualities: propTypes.array.isRequired,
     professions: propTypes.array.isRequired,
     onEditUser: propTypes.func.isRequired
 }
