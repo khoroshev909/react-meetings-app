@@ -1,9 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { useAuth } from '../../hooks/useAuth'
 import NavProfile from './navProfile'
+import { loadQualitiesList } from '../../store/quality'
+import { loadProfessions } from '../../store/profession'
 
 const Navbar = () => {
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(loadQualitiesList())
+        dispatch(loadProfessions())
+    }, [])
+    
     const { currentUser } = useAuth()
     return (
         <nav className="navbar bg-light mb-3">

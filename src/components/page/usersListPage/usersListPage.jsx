@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import customSort from '../../../utils/customSort'
 import Pagination from '../../common/pagination'
@@ -8,14 +9,15 @@ import GroupList from '../../common/groupList'
 import UsersTable from '../../ui/usersTable'
 import SearchForm from '../../ui/searchForm'
 import { useUsers } from '../../../hooks/useUsers'
-import { usePprofessions } from '../../../hooks/useProfessions'
 import { useAuth } from '../../../hooks/useAuth'
+import { getProfessions, getProfessionsLoading } from '../../../store/profession'
 
 const UsersListPage = () => {
     const { users } = useUsers()
     const { currentUser } = useAuth()
     const pageSize = 5
-    const { professions, loading: professionsLoading } = usePprofessions()
+    const professions = useSelector(getProfessions())
+    const professionsLoading = useSelector(getProfessionsLoading())
     const [currentProfession, setCurrentProfession] = useState(null)
     const [itemsCount, setItemsCount] = useState(users.length)
     const [currentPage, setCurrentPage] = useState(1)

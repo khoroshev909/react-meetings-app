@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import EditUserForm from '../../common/form/editUserForm'
-import { usePprofessions } from '../../../hooks/useProfessions'
-import { useQualities } from '../../../hooks/useQualities'
 import { useUsers } from '../../../hooks/useUsers'
 import { useAuth } from '../../../hooks/useAuth'
+import { getQualities, getQualitiesLoading } from '../../../store/quality'
+import { getProfessions, getProfessionsLoading } from '../../../store/profession'
 
 const EditUserPage = () => {
     const { userId } = useParams()
@@ -20,10 +21,13 @@ const EditUserPage = () => {
         qualities: []
     })
 
-    const { professions, loading: professionsLoading } = usePprofessions()
-    const { qualities, loading: qualitiesLoading } = useQualities()
     const { getUserById } = useUsers()
     const { updateUser } = useAuth()
+
+    const professions = useSelector(getProfessions())
+    const professionsLoading = useSelector(getProfessionsLoading())
+    const qualities = useSelector(getQualities())
+    const qualitiesLoading = useSelector(getQualitiesLoading())
 
     const transformQualities = (items) => {
         return Array.isArray(items) 

@@ -1,21 +1,23 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import propTypes from 'prop-types'
 import Quality from './quality'
-import { useQualities } from '../../../hooks/useQualities'
+import { getQualitiesList, getQualitiesLoading } from '../../../store/quality'
 
 const QualitiesBadges = ({ qualitiesIds }) => {
-    const { getQualitiesForUser, loading } = useQualities()
 
+    const loading = useSelector(getQualitiesLoading())
+
+    if (loading) return <p>Loading...</p> 
+
+    const qualitiesList = useSelector(getQualitiesList(qualitiesIds))
     if (!loading) {
-        const items = getQualitiesForUser(qualitiesIds)
         return (
-            items.map((quality) => (
+            qualitiesList.map((quality) => (
                 <Quality key={quality._id} {...{ quality }} />
             ))
         )
     }
-    return <p>Loading...</p>
-
 }
 
 QualitiesBadges.propTypes = { qualitiesIds: propTypes.array.isRequired }

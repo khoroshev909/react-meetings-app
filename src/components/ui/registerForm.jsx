@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import validator from '../../utils/validator'
 import TextField from '../common/form/textField'
 import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelect from '../common/form/multiSelect'
 import CheckboxField from '../common/form/checkboxField'
-import { useQualities } from '../../hooks/useQualities'
-import { usePprofessions } from '../../hooks/useProfessions'
 import { useAuth } from '../../hooks/useAuth'
+import { getQualities, getQualitiesLoading } from '../../store/quality'
+import { getProfessions, getProfessionsLoading } from '../../store/profession'
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({ 
@@ -22,9 +23,12 @@ const RegisterForm = () => {
     })
 
     const history = useHistory()
+    
+    const professions = useSelector(getProfessions())
+    const profLoading = useSelector(getProfessionsLoading())
 
-    const { qualities, loading: qualitiesLoading } = useQualities()
-    const { professions, loading: profLoading } = usePprofessions()
+    const qualities = useSelector(getQualities())
+    const qualitiesLoading = useSelector(getQualitiesLoading())
 
     const { signUp } = useAuth()
 

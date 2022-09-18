@@ -1,8 +1,9 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import propTypes from 'prop-types'
-import { usePprofessions } from '../../hooks/useProfessions'
 import { useAuth } from '../../hooks/useAuth'
+import { getProfessionById } from '../../store/profession'
 
 const UserCard = ({ 
     _id,
@@ -14,9 +15,8 @@ const UserCard = ({
     const history = useHistory()
     const { currentUser } = useAuth()
     const handleClick = () => history.push(history.location.pathname + '/edit')
-    const { getProfessionById } = usePprofessions()
 
-    const profession = getProfessionById(professionId)
+    const profession = useSelector(getProfessionById(professionId)) 
 
     return (
         <div className="card mb-3">
