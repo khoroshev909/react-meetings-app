@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useAuth } from '../../hooks/useAuth'
+import { login } from '../../store/users'
 import validator from '../../utils/validator'
 import CheckboxField from '../common/form/checkboxField'
 import TextField from '../common/form/textField'
 
 const LoginForm = () => {
+    const dispatch = useDispatch()
     const [formData, setFormData] = useState({ 
         email: '',
         password: '',
@@ -16,8 +18,6 @@ const LoginForm = () => {
 
     const history = useHistory()
     
-    const { login } = useAuth()
-
     const validateRules = {
         email: { 
             isRequired: { message: 'Введите ваш Email' },
@@ -51,22 +51,14 @@ const LoginForm = () => {
         }))
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         const isInvalid = validate()
         if (isInvalid) return
-
-        try {
-            await login(formData)
-            history.push('/')
-            // history.push(
-            //     history.location.state.from.pathname
-            //         ? history.location.state.from.pathname
-            //         : '/'
-            // )
-        } catch (error) {
-            setErrors(error)
-        }
+        const redirect = history.location?.state?.from?.pathname
+            ? history.location.state.from.pathname
+            : '/users'
+        dispatch(login({ formData, redirect }))
     }
 
     return (

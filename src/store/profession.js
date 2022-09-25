@@ -11,6 +11,7 @@ const professionSlice = createSlice({
     },
     reducers: {
         professionsRequested(state) {
+            if (!state.loading) return
             state.loading = true
         },
         professionsRecieved(state, action) {

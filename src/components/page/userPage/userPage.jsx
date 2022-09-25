@@ -1,19 +1,19 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import Comments from '../../ui/comments'
 import MeetingsCard from '../../common/meetingsCard'
 import QualitiesCard from '../../common/quality/qualitiesCard'
 import UserCard from '../../ui/userCard'
-import { useUsers } from '../../../hooks/useUsers'
 import { CommentProvider } from '../../../hooks/useComments'
+import { getUserById } from '../../../store/users'
 
 const UserPage = () => {
 
     const history = useHistory()
 
     const { userId } = useParams()
-    const { getUserById } = useUsers()
-    const user = getUserById(userId)
+    const user = useSelector(getUserById(userId))
     
     return (
         user ? (

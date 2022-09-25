@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import validator from '../../utils/validator'
 import TextField from '../common/form/textField'
 import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelect from '../common/form/multiSelect'
 import CheckboxField from '../common/form/checkboxField'
-import { useAuth } from '../../hooks/useAuth'
 import { getQualities, getQualitiesLoading } from '../../store/quality'
 import { getProfessions, getProfessionsLoading } from '../../store/profession'
+import { signUp } from '../../store/users'
 
 const RegisterForm = () => {
+    const dispatch = useDispatch()
+
+    const qualitiesLoading = useSelector(getQualitiesLoading())
+    const profLoading = useSelector(getProfessionsLoading())
+
+    const professions = useSelector(getProfessions())
+    const qualities = useSelector(getQualities())
+    
+    const [errors, setErrors] = useState({})
+    const isValid = Object.keys(errors).length
+
     const [formData, setFormData] = useState({ 
         email: '',
         name: '',
@@ -21,19 +31,6 @@ const RegisterForm = () => {
         qualities: '',
         license: false
     })
-
-    const history = useHistory()
-    
-    const professions = useSelector(getProfessions())
-    const profLoading = useSelector(getProfessionsLoading())
-
-    const qualities = useSelector(getQualities())
-    const qualitiesLoading = useSelector(getQualitiesLoading())
-
-    const { signUp } = useAuth()
-
-    const [errors, setErrors] = useState({})
-    const isValid = Object.keys(errors).length
 
     const validateRules = {
         email: { 
@@ -83,8 +80,7 @@ const RegisterForm = () => {
         const isInvalid = validate()
         if (isInvalid) return
         try {
-            await signUp(formData)
-            history.push('/')
+            dispatch(signUp(formData))
         } catch (error) {
             setErrors(error)
         }

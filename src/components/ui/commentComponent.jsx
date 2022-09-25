@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import propTypes from 'prop-types'
 import dateFormat from '../../utils/dateFormat'
-import { useUsers } from '../../hooks/useUsers'
-import { useAuth } from '../../hooks/useAuth'
+import { getCurrentUserId, getUserById } from '../../store/users'
 
 const CommentComponent = ({ comment, onRemoveComment }) => {
     
-    const [user, setUser] = useState()
-    const { getUserById } = useUsers()
+    const user = useSelector(getUserById(comment.userId))
 
-    const { currentUser } = useAuth()
-
-    useEffect(() => {
-        setUser(getUserById(comment.userId))
-    }, [])
+    const currentUserId = useSelector(getCurrentUserId())
 
     return (
         user ? (
@@ -42,7 +37,7 @@ const CommentComponent = ({ comment, onRemoveComment }) => {
                                                 </small>
                                             </span>
                                         </p>
-                                        {currentUser._id === user._id && (
+                                        {currentUserId === user._id && (
                                             <button 
                                                 className="btn btn-sm text-primary d-flex align-items-center"
                                                 type="button"

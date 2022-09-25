@@ -1,21 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { useAuth } from '../../hooks/useAuth'
+import { getCurrentUserData } from '../../store/users'
 import NavProfile from './navProfile'
-import { loadQualitiesList } from '../../store/quality'
-import { loadProfessions } from '../../store/profession'
 
 const Navbar = () => {
-
-    const dispatch = useDispatch()
-
-    useEffect(() => {
-        dispatch(loadQualitiesList())
-        dispatch(loadProfessions())
-    }, [])
     
-    const { currentUser } = useAuth()
+    const currentUser = useSelector(getCurrentUserData())
+
     return (
         <nav className="navbar bg-light mb-3">
             <div className="container-fluid">

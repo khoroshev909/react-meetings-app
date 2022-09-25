@@ -1,11 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import LoginForm from '../ui/loginForm'
 import RegisterForm from '../ui/registerForm'
+import { getQualitiesLoading, loadQualitiesList } from '../../store/quality'
+import { getProfessionsLoading, loadProfessions } from '../../store/profession'
 
-const Login = () => {
+const Login = () => {  
     const { type } = useParams()
     const [formType, setFormType] = useState(type === 'login' ? 'login' : 'register')
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(loadQualitiesList())
+        dispatch(loadProfessions())
+    }, [])
+
+    const qualitiesLoading = useSelector(getQualitiesLoading())
+    const profLoading = useSelector(getProfessionsLoading())
+
+    if (type === 'register' && (qualitiesLoading || profLoading)) return <h4>Loading</h4>
 
     const handleTogglePage = () => {
         setFormType((prevState) => prevState === 'login' ? 'register' : 'login')

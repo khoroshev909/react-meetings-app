@@ -1,15 +1,16 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { nanoid } from 'nanoid'
-import { useAuth } from '../../hooks/useAuth'
 import { useComments } from '../../hooks/useComments'
 import CommentsList from '../common/commentsList'
 import AddCommentForm from '../common/form/addCommentForm'
+import { getCurrentUserId } from '../../store/users'
 
 const Comments = () => {
 
     const { userId } = useParams()
-    const { currentUser } = useAuth()
+    const currentUserId = useSelector(getCurrentUserId())
 
     const { addComment, comments, removeComment, loading: commentsLoading } = useComments()
                  
@@ -21,7 +22,7 @@ const Comments = () => {
         addComment({ 
             ...newComment,
             _id: nanoid(),
-            userId: currentUser._id,
+            userId: currentUserId,
             pageId: userId,
             created_at: Date.now(),
             updated_at: Date.now()

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import customSort from '../../../utils/customSort'
@@ -8,13 +8,14 @@ import paginate from '../../../utils/paginate'
 import GroupList from '../../common/groupList'
 import UsersTable from '../../ui/usersTable'
 import SearchForm from '../../ui/searchForm'
-import { useUsers } from '../../../hooks/useUsers'
-import { useAuth } from '../../../hooks/useAuth'
 import { getProfessions, getProfessionsLoading } from '../../../store/profession'
+import { getCurrentUserId, getIsDataLoaded, getUsersList } from '../../../store/users'
 
 const UsersListPage = () => {
-    const { users } = useUsers()
-    const { currentUser } = useAuth()
+    const isDataLoaded = useSelector(getIsDataLoaded)
+    const users = useSelector(getUsersList())
+    console.log('users: ', users)
+    const currentUserId = useSelector(getCurrentUserId())
     const pageSize = 5
     const professions = useSelector(getProfessions())
     const professionsLoading = useSelector(getProfessionsLoading())
@@ -41,37 +42,18 @@ const UsersListPage = () => {
         } else {
             filtered = users
         }
-        return filtered.filter((u) => u._id !== currentUser._id)
+        return filtered.filter((u) => u._id !== currentUserId)
     }
 
-    const filterUsers = useCallback(filteredUsers(users), [
-        users, search, currentProfession, currentUser
-    ]) 
-
-    // if (search) {
-    //     const filteredBySearch = users.filter(({ name }) => { 
-    //         return name.toLowerCase().includes(search.toLowerCase())
-    //     })
-
-    //     filterUsers = filteredBySearch.length === 0
-    //         ? []
-    //         : filteredBySearch
-    // } else if (currentProfession !== null) {
-    //     filterUsers = users.filter((user) => {
-    //         return JSON.stringify(user.profession) === JSON.stringify(currentProfession._id)
-    //     })
-    // } else {
-    //     filterUsers = users
-    // }
-    
-    const count = filterUsers.length
+    const filterUsers = filteredUsers(users)
 
     const sortedByColumn = _.sortBy(filterUsers, [sortBy.columnValue])
     // В новой версии lodash у функции sortBy нет третьего параметра для сортировки asc, desc
     const sortedAscDesc = customSort(sortedByColumn, sortBy)
-        
+
     const userCrop = paginate(sortedAscDesc, currentPage, pageSize)
- 
+    const count = filterUsers.length
+    
     useEffect(() => {
         setItemsCount(filterUsers.length)
         if (filterUsers.length <= 4) {
@@ -119,6 +101,8 @@ const UsersListPage = () => {
         setSerch(value)
     }
 
+    if (!isDataLoaded) return <h4>Loading...</h4>
+
     return (
         <div className="d-flex p-2">
             {professions && !professionsLoading && (
@@ -139,7 +123,6 @@ const UsersListPage = () => {
             </div>
             )}
 
-            {users && (
             <div className="d-flex flex-column flex-grow-1 p-2 m-2">
 
                 <div className="d-flexflex-column flex-shrink-1">
@@ -166,7 +149,6 @@ const UsersListPage = () => {
                     </div>
                 )}
             </div>
-            )}
         </div>
     )
 }

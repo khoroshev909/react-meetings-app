@@ -1,29 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import EditUserForm from '../../common/form/editUserForm'
-import { useUsers } from '../../../hooks/useUsers'
-import { useAuth } from '../../../hooks/useAuth'
 import { getQualities, getQualitiesLoading } from '../../../store/quality'
 import { getProfessions, getProfessionsLoading } from '../../../store/profession'
+import { getCurrentUserData, getUsersLoading, updateUser } from '../../../store/users'
 
 const EditUserPage = () => {
+    const dispatch = useDispatch()
     const { userId } = useParams()
     const history = useHistory()
-
-    const [userLoading, setUserLoading] = useState(true)
- 
-    const [user, setUser] = useState({ 
-        _id: '',
-        name: '',
-        email: '',
-        profession: '',
-        qualities: []
-    })
-
-    const { getUserById } = useUsers()
-    const { updateUser } = useAuth()
-
+    
+    const userLoading = getUsersLoading()
     const professions = useSelector(getProfessions())
     const professionsLoading = useSelector(getProfessionsLoading())
     const qualities = useSelector(getQualities())
@@ -36,32 +24,27 @@ const EditUserPage = () => {
             : Object.keys(items).map((key) => ({ label: items[key].name, value: items[key]._id }))
     }
 
+    const currentUserData = useSelector(getCurrentUserData())
+
+    const user = {
+        ...currentUserData,
+        qualities: transformQualities(currentUserData.qualities)
+    }
+
     const transformQualitiestoIds = (items) => {
         return items.map((item) => typeof item === 'string' ? item : item.value)
     }
     
-    useEffect(() => {
-        const data = getUserById(userId)
-        setUser({
-            ...data,
-            qualities: transformQualities(data.qualities)
-        })
-    }, [])
-
-    useEffect(() => {
-        if (user._id) setUserLoading(false)
-    }, [user]) 
-
     const backToUserPage = () => {
         history.push(`/users/${user._id}`)
     }
 
-    const handleSubmmit = async (data) => {
-        await updateUser({ 
+    const handleSubmmit = (data) => {
+        dispatch(updateUser({ 
             ...data,
             qualities: transformQualitiestoIds(data.qualities),
             _id: userId
-        }).then(backToUserPage())
+        }))
     }
 
     return (

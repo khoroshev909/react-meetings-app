@@ -7,7 +7,7 @@ import { QualitiesBadges } from '../common/quality'
 import Profession from '../common/profession'
 
 const UsersTable = ({ users, loading, selectedSort, onSort }) => {
-
+    
     const columns = {
         name: { 
             path: 'name',

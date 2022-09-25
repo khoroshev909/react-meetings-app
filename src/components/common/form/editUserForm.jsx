@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React from 'react'
 import propTypes from 'prop-types'
 import FormComponent from './form'
 import TextField from './textField'
@@ -6,13 +6,6 @@ import SelectField from './selectField'
 import MultiSelect from './multiSelect'
 
 const EditUserForm = ({ user, qualities, professions, onEditUser }) => {
-
-    const prevUser = useRef(user).current
-    const [loadForm, setLoadForm] = useState(false)
-
-    useEffect(() => {
-        if (prevUser._id !== user._id) setLoadForm(true)
-    }, [user])
     
     const validateRules = {
         name: { 
@@ -31,41 +24,39 @@ const EditUserForm = ({ user, qualities, professions, onEditUser }) => {
     }
 
     return (
-        loadForm && ( 
-            <FormComponent
-                validateRules={validateRules}
-                defaultData={user || {}}
-                onSubmit={(data) => onEditUser(data)}>
+        <FormComponent
+            validateRules={validateRules}
+            defaultData={user || {}}
+            onSubmit={(data) => onEditUser(data)}>
 
-                <TextField
-                    label="Имя"
-                    name="name"
-                    autoFocus />
+            <TextField
+                label="Имя"
+                name="name"
+                autoFocus />
 
-                <TextField
-                    label="Email"
-                    name="email" />
+            <TextField
+                label="Email"
+                name="email" />
 
-                <SelectField
-                    showLabel={false}
-                    options={professions}
-                    name="profession"
-                    defaultOption="Выберите профессию" />
+            <SelectField
+                showLabel={false}
+                options={professions}
+                name="profession"
+                defaultOption="Выберите профессию" />
 
-                <MultiSelect
-                    name="qualities"
-                    defaultValue={user.qualities || []}
-                    options={qualities}
-                    showLabel={false}
-                    placeholder="Ваши качества..." />
+            <MultiSelect
+                name="qualities"
+                defaultValue={user.qualities || []}
+                options={qualities}
+                showLabel={false}
+                placeholder="Ваши качества..." />
 
-                <button
-                    type="submit"
-                    className="btn btn-primary w-100 mt-3">
-                    Обновить
-                </button>
-            </FormComponent>
-        )
+            <button
+                type="submit"
+                className="btn btn-primary w-100 mt-3">
+                Обновить
+            </button>
+        </FormComponent>
     )
 }
 

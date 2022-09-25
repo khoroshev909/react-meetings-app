@@ -11,6 +11,7 @@ const qualitySlice = createSlice({
     },
     reducers: {
         qualitiesRequested(state) {
+            if (!state.loading) return
             state.loading = true
         },
         qualitiesRecieved(state, action) {
