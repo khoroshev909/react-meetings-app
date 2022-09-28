@@ -14,7 +14,6 @@ import { getCurrentUserId, getIsDataLoaded, getUsersList } from '../../../store/
 const UsersListPage = () => {
     const isDataLoaded = useSelector(getIsDataLoaded)
     const users = useSelector(getUsersList())
-    console.log('users: ', users)
     const currentUserId = useSelector(getCurrentUserId())
     const pageSize = 5
     const professions = useSelector(getProfessions())

@@ -25,6 +25,7 @@ const App = () => {
                         <Navbar />
                         <Switch>
                             <ProtectedRoute path="/users/:userId?/:edit?" component={Users} />
+                            <ProtectedRoute path="/login/:type?" component={Login} />
                             <Route path="/login/:type?" component={Login} />
                             <Route path="/" exact component={Main} />
                             <Route to="/logaut" component={LogOut} />

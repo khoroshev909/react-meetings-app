@@ -5,9 +5,7 @@ import CommentComponent from '../ui/commentComponent'
 const CommentsList = ({ comments, onRemoveComment }) => { 
     return (
         comments.length ? (
-            comments.sort((prev, next) => { 
-                return +next.created_at - +prev.created_at
-            }).map((comment) => (
+            comments.map((comment) => (
                 <CommentComponent
                     key={comment._id}
                     comment={comment}

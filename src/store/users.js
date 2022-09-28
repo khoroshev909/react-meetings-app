@@ -2,6 +2,7 @@ import { createAction, createSlice } from '@reduxjs/toolkit'
 import authService from '../services/auth.service'
 import { getAccessToken, getUserId, removeAuthData, setTokens } from '../services/localStorage.service'
 import userService from '../services/user.service'
+import generateAuthError from '../utils/generateAuthError'
 import history from '../utils/history'
 import randomInt from '../utils/randomInt'
 
@@ -41,13 +42,12 @@ const userSlice = createSlice({
             state.loading = false
         },
         usersAuthSuccess(state, action) {
+            if (state.error) state.error = null
             state.auth = {}
             state.auth.userId = action.payload
             state.auth.logged = true
         },
         usersAuthFailed(state, action) {
-            state.auth.userId = null
-            state.auth.logged = false
             state.error = action.payload
         },
         userCreated(state, action) {
@@ -66,6 +66,7 @@ const userSlice = createSlice({
         userLoggedOut(state) {
             state.auth = null
             state.entities = null
+            state.isDataLoaded = false
         }
     }
 })
@@ -124,7 +125,13 @@ export const login = ({ formData, redirect = '/' }) => async (dispatch) => {
         dispatch(usersAuthSuccess(data.localId))
         history.push(redirect)
     } catch (error) {
-        usersAuthFailed(error.message)
+        const { code, message } = error.response.data.error
+        if (code === 400) {
+            const errorMessage = generateAuthError(message)
+            dispatch(usersAuthFailed(errorMessage))
+        } else {
+            dispatch(usersAuthFailed(message))
+        }
     }
 }
 
@@ -144,12 +151,14 @@ export const signUp = ({ email, password, ...rest }) => async (dispatch) => {
             ...rest 
         })
         dispatch(userCreated(content))
-        
         history.push('/users')
     } catch (error) {
-        usersAuthFailed(error.message)
+        const errorMessage = generateAuthError(error)
+        dispatch(usersAuthFailed(errorMessage))
     }
 }
+
+export const getAuthErrorMessage = () => (state) => state.users.error
 
 export const getUsersList = () => (state) => state.users.entities
 

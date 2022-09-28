@@ -1,32 +1,46 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { nanoid } from 'nanoid'
-import { useComments } from '../../hooks/useComments'
+import { toast } from 'react-toastify'
 import CommentsList from '../common/commentsList'
 import AddCommentForm from '../common/form/addCommentForm'
 import { getCurrentUserId } from '../../store/users'
+import { addComment, getComments, getCommentsError, getCommentsLoading, loadComments, removeComment } from '../../store/comments'
 
 const Comments = () => {
+    const dispatch = useDispatch()
 
     const { userId } = useParams()
     const currentUserId = useSelector(getCurrentUserId())
 
-    const { addComment, comments, removeComment, loading: commentsLoading } = useComments()
-                 
+    const errorMessage = useSelector(getCommentsError())
+
+    useEffect(() => {
+        toast.error(errorMessage)
+    }, [errorMessage])
+
+    useEffect(() => {
+        dispatch(loadComments(userId))
+    }, [userId])
+
+    const comments = useSelector(getComments())
+
+    const commentsLoading = useSelector(getCommentsLoading())
+ 
     const handleRemoveComment = (commentId) => {
-        removeComment(commentId)
+        dispatch(removeComment(commentId))
     }
 
     const handleAddComment = (newComment) => {
-        addComment({ 
+        dispatch(addComment({
             ...newComment,
             _id: nanoid(),
             userId: currentUserId,
             pageId: userId,
             created_at: Date.now(),
             updated_at: Date.now()
-        })
+        }))
     }
 
     return (
