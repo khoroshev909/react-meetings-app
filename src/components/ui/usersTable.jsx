@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import propTypes from 'prop-types'
 import Table from '../common/table'
@@ -6,7 +6,7 @@ import Bookmark from '../common/bookmark'
 import { QualitiesBadges } from '../common/quality'
 import Profession from '../common/profession'
 
-const UsersTable = ({ users, loading, selectedSort, onSort }) => {
+const UsersTable = ({ users, selectedSort, onSort }) => {
     
     const columns = {
         name: { 
@@ -34,26 +34,11 @@ const UsersTable = ({ users, loading, selectedSort, onSort }) => {
             path: 'bookmark', 
             name: 'Избранное',
             component: (user) => {
-
-                const [isBookmarked, setIsBookmarked] = useState(
-                    localStorage.getItem(`bookmark-${user._id}`) ? true : false
-                )
-
-                const handleToggleBookmark = () => {
-                    if (isBookmarked) {
-                        localStorage.removeItem(`bookmark-${user._id}`)
-                        setIsBookmarked(false)
-                    } else {
-                        localStorage.setItem(`bookmark-${user._id}`, true)
-                        setIsBookmarked(true)
-                    }
-                }
-
+                const isBookmarked = localStorage.getItem(`bookmark-${user._id}`) ? true : false
                 return (
                     <Bookmark
                         id={user._id}
-                        isBookmarked={isBookmarked}
-                        onToggleBookmark={handleToggleBookmark} />
+                        isBookmarked={isBookmarked} />
                 )
             }
         },
@@ -61,13 +46,12 @@ const UsersTable = ({ users, loading, selectedSort, onSort }) => {
     }
     
     return ( 
-        <Table {...{ users, loading, selectedSort, columns, onSort }} />
+        <Table {...{ users, selectedSort, columns, onSort }} />
     )
 }
 
 UsersTable.propTypes = {
     users: propTypes.array.isRequired,
-    loading: propTypes.bool.isRequired,
     onToggleBookmark: propTypes.func.isRequired,
     onSort: propTypes.func.isRequired,
     selectedSort: propTypes.object.isRequired

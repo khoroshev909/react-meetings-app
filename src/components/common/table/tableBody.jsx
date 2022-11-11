@@ -2,7 +2,7 @@ import React from 'react'
 import propTypes from 'prop-types'
 import _ from 'lodash'
 
-const TableBody = ({ items, loading, columns }) => {
+const TableBody = ({ items, columns }) => {
 
     const renderData = (item, column) => {
         if (columns[column].component) {
@@ -17,13 +17,7 @@ const TableBody = ({ items, loading, columns }) => {
 
     return (
         <tbody>
-            {loading ? (
-                <tr>
-                    <td>
-                        <h4>Loading...</h4>
-                    </td>
-                </tr>
-            ) : items.length ? (
+            {items.length ? (
                 items.map((item) => (
                     <tr key={item._id} className="table-primary">
                         {Object.keys(columns).map((column) => (
@@ -46,7 +40,6 @@ const TableBody = ({ items, loading, columns }) => {
 
 TableBody.propTypes = {
     items: propTypes.array.isRequired,
-    loading: propTypes.bool.isRequired,
     columns: propTypes.object.isRequired
 }
  

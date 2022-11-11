@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory, useLocation } from 'react-router-dom'
 import _ from 'lodash'
+import query from 'query-string'
 import customSort from '../../../utils/customSort'
 import Pagination from '../../common/pagination'
 import SearchStatus from '../../ui/searchStatus'
@@ -10,17 +12,22 @@ import UsersTable from '../../ui/usersTable'
 import SearchForm from '../../ui/searchForm'
 import { getProfessions, getProfessionsLoading } from '../../../store/profession'
 import { getCurrentUserId, getIsDataLoaded, getUsersList } from '../../../store/users'
+import getQueryParams from '../../../utils/getQueryParams'
 
 const UsersListPage = () => {
+    const history = useHistory()
+    const location = useLocation()
+    const parsedQuery = query.parse(location.search)
+    const { page, prof } = query.parse(location.search)
     const isDataLoaded = useSelector(getIsDataLoaded)
     const users = useSelector(getUsersList())
     const currentUserId = useSelector(getCurrentUserId())
     const pageSize = 5
     const professions = useSelector(getProfessions())
     const professionsLoading = useSelector(getProfessionsLoading())
-    const [currentProfession, setCurrentProfession] = useState(null)
+    const [currentProfession, setCurrentProfession] = useState(prof || null)
     const [itemsCount, setItemsCount] = useState(users.length)
-    const [currentPage, setCurrentPage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(+page || 1)
     const [sortBy, setSortBy] = useState({ columnValue: 'bookmark', columnOrder: 'desc' })
     const [search, setSerch] = useState('')
 
@@ -36,7 +43,11 @@ const UsersListPage = () => {
                 : filteredBySearch
         } else if (currentProfession !== null) {
             filtered = data.filter((user) => {
-                return JSON.stringify(user.profession) === JSON.stringify(currentProfession._id)
+                const current = professions.find((p) => p.alias === currentProfession)
+                if (current) {
+                    return JSON.stringify(user.profession) === JSON.stringify(current._id)
+                }
+                return user
             })
         } else {
             filtered = users
@@ -52,23 +63,31 @@ const UsersListPage = () => {
 
     const userCrop = paginate(sortedAscDesc, currentPage, pageSize)
     const count = filterUsers.length
+
+    useEffect(() => {
+        const lastPage = Math.ceil(count / pageSize)
+        if (currentPage > lastPage) {
+            setCurrentPage(lastPage)
+            history.push('/users?' + getQueryParams(parsedQuery, { page: lastPage }))
+        }
+    }, [currentPage])
     
     useEffect(() => {
         setItemsCount(filterUsers.length)
-        if (filterUsers.length <= 4) {
-            setCurrentPage(1)
-        }
     }, [filterUsers])
 
     useEffect(() => {
-        setCurrentPage(1)
-    }, [currentProfession, search])
-
-    useEffect(() => {
-        if ((users.length + pageSize <= pageSize * currentPage) && currentPage > 1) {
-            setCurrentPage(currentPage - 1)
+        if (search !== '') {
+            setCurrentPage(1)
+            history.push('/users')
         }
-    }, [users])
+    }, [search])
+
+    // useEffect(() => {
+    //     if ((users.length + pageSize <= pageSize * currentPage) && currentPage > 1) {
+    //         setCurrentPage(currentPage - 1)
+    //     }
+    // }, [users])
 
     const handleUserSort = (newSortBy) => {
         setSortBy(newSortBy)
@@ -76,16 +95,20 @@ const UsersListPage = () => {
 
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex)
+        history.push('/users?' + getQueryParams(parsedQuery, { page: pageIndex }))
     }
 
     const handleFilterUsersByProfession = (newProfession) => {
         setSerch('')
-        setCurrentProfession(newProfession)
+        setCurrentPage(1)
+        setCurrentProfession(newProfession.alias)
+        history.push(`/users?prof=${newProfession.alias}`)
     }
 
     const resetProfessions = () => {
         setSerch('')
         setCurrentProfession(null)
+        history.push('/users')
     }
 
     const handleToggleBookmark = (id) => {
@@ -133,12 +156,11 @@ const UsersListPage = () => {
 
                 <UsersTable
                     users={userCrop}
-                    loading={false}
                     selectedSort={sortBy}
                     onSort={handleUserSort}
                     onToggleBookmark={handleToggleBookmark} />
 
-                {count > 4 && (
+                {(count > pageSize - 1) && (
                     <div className="d-flex justify-content-center">
                         <Pagination
                             itemsCount={itemsCount}
