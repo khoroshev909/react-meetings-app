@@ -34,7 +34,6 @@ const Login = () => {
                     {formType === 'login' ? (
                         <>
                             <h4 className="mb-3">Вход</h4>
-                            <LoginForm />
                             <div className="d-flex align-items-center justify-content-center mt-2">
                                 <p>У вас ещё нет аккаунта?</p>
                                 <button
@@ -44,11 +43,11 @@ const Login = () => {
                                     Зарегистрироваться
                                 </button>
                             </div>
+                            <LoginForm />
                         </>
                     ) : (
                         <>
                             <h4 className="mb-3">Регистрация</h4>
-                            <RegisterForm />
                             <div className="d-flex align-items-center justify-content-center mt-2">
                                 <p>Уже есть аккаунт?</p>
                                 <button
@@ -58,6 +57,7 @@ const Login = () => {
                                     Войти
                                 </button>
                             </div>
+                            <RegisterForm />
                         </>
                     )}
                 </div>

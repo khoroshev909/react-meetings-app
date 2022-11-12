@@ -13,18 +13,13 @@ const Navbar = () => {
             <div className="container-fluid">
                 <ul className="nav">
                     <li className="nav-item">
-                        <Link to="/" className="nav-link active">Main</Link>
+                        <Link to="/users" className="nav-link active">Meetings App</Link>
                     </li>
-                    {currentUser && (
-                        <li className="nav-item">
-                            <Link to="/users" className="nav-link">Users</Link>
-                        </li>
-                    )}
                 </ul>
                 <div className="d-flex">
                     {currentUser
                         ? <NavProfile />
-                        : <Link to="/login" className="nav-link">Login</Link>}
+                        : <Link to="/login" className="nav-link">Вход</Link>}
                 </div> 
             </div>
         </nav> 

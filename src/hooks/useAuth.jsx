@@ -6,6 +6,7 @@ import axios from 'axios'
 import userService from '../services/user.service'
 import { getUserId, removeAuthData, setTokens } from '../services/localStorage.service'
 import randomInt from '../utils/randomInt'
+import configFile from '../config.json'
 
 const httpAuth = axios.create()
 
@@ -68,7 +69,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     async function login({ email, password }) {
-        const key = process.env.REACT_APP_FIREBASE_AUTH_KEY
+        const key = configFile.REACT_APP_FIREBASE_AUTH_KEY
         const api = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${key}`
 
         try {
@@ -99,9 +100,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     async function signUp({ email, password, ...rest }) {
-        const key = process.env.REACT_APP_FIREBASE_AUTH_KEY
+        const key = configFile.REACT_APP_FIREBASE_AUTH_KEY
         const api = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`
-
         try {
             const { data } = await httpAuth.post(api, { 
                 email,

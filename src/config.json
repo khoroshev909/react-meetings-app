@@ -1,4 +1,5 @@
 {
     "baseEndpoint": "https://mettings-app-react-default-rtdb.europe-west1.firebasedatabase.app/",
-    "isFirebase": true
+    "isFirebase": true,
+    "REACT_APP_FIREBASE_AUTH_KEY": "AIzaSyBDYBRnn_B2fzapkzTJ4SeacyyOiIGo1Vs"
 }

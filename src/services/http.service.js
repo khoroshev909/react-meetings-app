@@ -12,7 +12,8 @@ http.interceptors.request.use(
             config.url = (containSlash ? config.url.slice(0, -1) : config.url) + '.json'
 
             if (getAccessToken() && getExpiresTime() < Date.now()) {
-                const url = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_AUTH_KEY}`
+                const key = configFile.REACT_APP_FIREBASE_AUTH_KEY
+                const url = `https://securetoken.googleapis.com/v1/token?key=${key}`
                 const payload = {
                     grant_type: 'refresh_token',
                     refresh_token: getRefreshToken()
